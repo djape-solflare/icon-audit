@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Icon System Audit — MOB · EXT · WEB</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #e5e5e5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 20px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  header h1 { font-size: 20px; font-weight: 700; color: #f5c518; white-space: nowrap; }
+  header p { font-size: 13px; color: #777; }
+
+  .controls { background: #161616; border-bottom: 1px solid #222; padding: 14px 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
+  input[type=search] { background: #222; border: 1px solid #333; border-radius: 8px; color: #e5e5e5; font-size: 13px; padding: 8px 14px; width: 240px; outline: none; }
+  input[type=search]:focus { border-color: #f5c518; }
+  select { background: #222; border: 1px solid #333; border-radius: 8px; color: #e5e5e5; font-size: 13px; padding: 8px 12px; outline: none; cursor: pointer; }
+  select:focus { border-color: #f5c518; }
+
+  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fbtn { background: #222; border: 1px solid #333; border-radius: 20px; color: #aaa; cursor: pointer; font-size: 12px; padding: 5px 14px; transition: all .15s; white-space: nowrap; }
+  .fbtn:hover { border-color: #555; color: #fff; }
+  .fbtn.active { background: #f5c518; border-color: #f5c518; color: #111; font-weight: 600; }
+
+  .stats { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+  .stat { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 8px; padding: 6px 14px; text-align: center; cursor: pointer; transition: border-color .15s; }
+  .stat:hover { border-color: #444; }
+  .stat.active { border-color: #f5c518; }
+  .stat .n { font-size: 18px; font-weight: 700; }
+  .stat .l { font-size: 11px; color: #666; margin-top: 1px; }
+  .stat.green .n { color: #4caf50; }
+  .stat.red .n { color: #ef5350; }
+  .stat.orange .n { color: #ff9800; }
+
+  .tabs { display: flex; gap: 0; background: #161616; border-bottom: 1px solid #222; padding: 0 32px; }
+  .tab { background: none; border: none; border-bottom: 2px solid transparent; color: #666; cursor: pointer; font-size: 13px; padding: 12px 18px; transition: all .15s; }
+  .tab:hover { color: #ccc; }
+  .tab.active { border-bottom-color: #f5c518; color: #f5c518; font-weight: 600; }
+
+  main { padding: 24px 32px; max-width: 1400px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #222; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: #1a1a1a; }
+  th { color: #888; font-weight: 500; padding: 12px 16px; text-align: left; white-space: nowrap; border-bottom: 1px solid #222; }
+  th.plat { color: #f5c518; }
+  tbody tr { border-bottom: 1px solid #1e1e1e; transition: background .1s; }
+  tbody tr:hover { background: #1c1c1c; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr.conflict { background: #1f1212; }
+  tbody tr.conflict:hover { background: #231515; }
+  tbody tr.dup { background: #1f1a10; }
+  tbody tr.dup:hover { background: #231e12; }
+  td { padding: 10px 16px; vertical-align: middle; }
+  td.section { color: #555; font-size: 12px; }
+  td.label { font-weight: 500; color: #ddd; }
+
+  .icon-cell { display: flex; align-items: center; gap: 8px; }
+  .icon-preview { width: 24px; height: 24px; filter: invert(1) opacity(0.7); flex-shrink: 0; }
+  .icon-name { font-family: monospace; font-size: 12px; color: #bbb; background: #1e1e1e; padding: 2px 7px; border-radius: 4px; }
+  .icon-name.conflict-icon { background: #2a1515; color: #f87171; }
+  .icon-name.dup-icon { background: #2a1e0a; color: #fb923c; }
+
+  .badge { border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; white-space: nowrap; }
+  .badge.ok { background: #1a2e1a; color: #4caf50; }
+  .badge.conflict { background: #2e1a1a; color: #ef5350; }
+  .badge.dup { background: #2e2010; color: #ff9800; }
+  .badge.none { color: #444; }
+
+  .dash { color: #333; }
+
+  /* GALLERY */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .card { background: #1a1a1a; border: 1px solid #252525; border-radius: 10px; cursor: pointer; overflow: hidden; transition: all .15s; }
+  .card:hover { border-color: #444; transform: translateY(-1px); }
+  .card.conflict { border-color: #3d1f1f; }
+  .card.dup { border-color: #3d2e10; }
+  .card-img { align-items: center; background: #222; display: flex; height: 80px; justify-content: center; }
+  .card-img img { filter: invert(1) opacity(0.75); height: 36px; width: 36px; }
+  .card-img .no-icon { color: #444; font-size: 11px; }
+  .card-body { padding: 8px 10px; }
+  .card-label { color: #ccc; font-size: 11px; font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
+  .card-section { color: #555; font-size: 10px; }
+  .card-status { font-size: 10px; margin-top: 4px; }
+
+  /* DUPLICATE PANEL */
+  .dup-panel { display: flex; flex-direction: column; gap: 10px; }
+  .dup-card { background: #1a1a1a; border: 1px solid #3d2e10; border-radius: 10px; padding: 16px; }
+  .dup-icon-name { color: #f5c518; font-family: monospace; font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .dup-icon-name img { filter: invert(1) opacity(0.7); height: 28px; width: 28px; }
+  .dup-labels { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dup-label { background: #2a1e0a; border: 1px solid #3d2e10; border-radius: 4px; color: #fb923c; font-size: 12px; padding: 3px 10px; }
+  .dup-count { color: #666; font-size: 12px; }
+
+  .empty { color: #444; padding: 60px; text-align: center; font-size: 14px; }
+  .count-info { color: #555; font-size: 12px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🎯 Icon System Audit</h1>
+    <p>MOB · EXT · WEB — Google Material Icons consistency analysis</p>
+  </div>
+  <div class="stats">
+    <div class="stat" id="stat-all" onclick="setFilter('all')">
+      <div class="n" id="n-all">—</div><div class="l">Total</div>
+    </div>
+    <div class="stat green" id="stat-ok" onclick="setFilter('ok')">
+      <div class="n" id="n-ok">—</div><div class="l">Consistent ✓</div>
+    </div>
+    <div class="stat red" id="stat-conflict" onclick="setFilter('conflicts')">
+      <div class="n" id="n-conflict">—</div><div class="l">⚡ Conflict</div>
+    </div>
+    <div class="stat orange" id="stat-dup" onclick="setFilter('dup')">
+      <div class="n" id="n-dup">—</div><div class="l">⚠️ Duplicate</div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <input type="search" id="search" placeholder="Search action or icon name…" oninput="render()">
+  <select id="sectionFilter" onchange="render()">
+    <option value="">All sections</option>
+  </select>
+  <div class="filter-btns">
+    <button class="fbtn active" onclick="setFilter('all')">All</button>
+    <button class="fbtn" onclick="setFilter('conflicts')">⚡ Conflicts</button>
+    <button class="fbtn" onclick="setFilter('ok')">✅ Consistent</button>
+    <button class="fbtn" onclick="setFilter('dup')">⚠️ Duplicates</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="setTab('table')">📋 Table</button>
+  <button class="tab" onclick="setTab('gallery')">🖼 Gallery</button>
+  <button class="tab" onclick="setTab('duplicates')">⚠️ Same icon, different action</button>
+</div>
+
+<main>
+  <div class="count-info" id="countInfo"></div>
+  <div id="view"></div>
+</main>
+
+<script>
+const BASE = 'https://fonts.gstatic.com/s/i/materialicons';
+const PNG = name => name ? `${BASE}/${name}/v12/24px.png` : null;
+
+const DATA = [
+  // Hero Card
+  {s:'Hero Card',l:'Copy',mob:'content_copy',ext:'content_copy',web:'content_copy'},
+  {s:'Hero Card',l:'Card',mob:'credit_card',ext:null,web:null},
+  {s:'Hero Card',l:'Customize',mob:'brush',ext:'brush',web:'brush'},
+  {s:'Hero Card',l:'Scan QR',mob:'qr_code',ext:null,web:null},
+  {s:'Hero Card',l:'Rename wallet',mob:'edit',ext:null,web:null},
+  {s:'Hero Card',l:'Edit background',mob:'brush',ext:null,web:null},
+  {s:'Hero Card',l:'Hide balance',mob:'visibility_off',ext:'visibility_off',web:'visibility_off'},
+  {s:'Hero Card',l:'Show balance',mob:'visibility',ext:'visibility',web:'visibility'},
+  {s:'Hero Card',l:'Settings',mob:null,ext:null,web:'settings'},
+  {s:'Hero Card',l:'Deposit',mob:null,ext:'add',web:'add'},
+  {s:'Hero Card',l:'Buy with card or bank',mob:null,ext:'attach_money',web:'attach_money'},
+  {s:'Hero Card',l:'Receive crypto',mob:null,ext:'qr_code',web:'qr_code'},
+  {s:'Hero Card',l:'Stake',mob:null,ext:null,web:'savings'},
+  {s:'Hero Card',l:'Send',mob:null,ext:null,web:'send'},
+  {s:'Hero Card',l:'Three dots',mob:'more_vert',ext:'more_vert',web:null},
+  {s:'Hero Card',l:'Expand view',mob:null,ext:'expand_content',web:null},
+  {s:'Hero Card',l:'Sidebar',mob:null,ext:'last_page',web:null},
+  {s:'Hero Card',l:'Popup',mob:null,ext:'float_landscape_2',web:null},
+  // Portfolio
+  {s:'Portfolio',l:'Deposit',mob:'arrow_downward',ext:null,web:null},
+  {s:'Portfolio',l:'Swap',mob:'swap_horiz',ext:null,web:null},
+  {s:'Portfolio',l:'Stake',mob:'savings',ext:null,web:null},
+  {s:'Portfolio',l:'Send',mob:'send',ext:null,web:null},
+  {s:'Portfolio',l:'Stocks placeholder',mob:'bar_chart',ext:null,web:null},
+  {s:'Portfolio',l:'Activity placeholder',mob:'rotate_left',ext:null,web:null},
+  {s:'Portfolio',l:'Token balance history',mob:null,ext:'finance_mode',web:null},
+  // Bottom nav
+  {s:'Bottom nav',l:'Portfolio',mob:'wallet',ext:'wallet',web:'wallet'},
+  {s:'Bottom nav',l:'Market',mob:'bar_chart',ext:'bar_chart',web:'bar_chart'},
+  {s:'Bottom nav',l:'Swap',mob:'swap_horiz',ext:'swap_horiz',web:null},
+  {s:'Bottom nav',l:'Explore',mob:'language',ext:'language',web:'language'},
+  {s:'Bottom nav',l:'Activity',mob:null,ext:'history',web:'history'},
+  {s:'Bottom nav',l:'Settings',mob:'settings',ext:'settings',web:null},
+  // Side nav
+  {s:'Side nav',l:'Portfolio',mob:null,ext:null,web:'wallet'},
+  {s:'Side nav',l:'Tokens',mob:null,ext:null,web:'database'},
+  {s:'Side nav',l:'Predictions',mob:null,ext:null,web:'query_stats'},
+  {s:'Side nav',l:'Stocks',mob:null,ext:null,web:'finance'},
+  {s:'Side nav',l:'Staking',mob:null,ext:null,web:'savings'},
+  {s:'Side nav',l:'Earn',mob:null,ext:null,web:'paid'},
+  {s:'Side nav',l:'Collections',mob:null,ext:null,web:'grid_view'},
+  {s:'Side nav',l:'Explore',mob:null,ext:null,web:'language'},
+  {s:'Side nav',l:'Market',mob:null,ext:null,web:'bar_chart'},
+  {s:'Side nav',l:'Trade',mob:null,ext:null,web:'swap_horiz'},
+  {s:'Side nav',l:'Activity',mob:null,ext:null,web:'history'},
+  // Swap
+  {s:'Swap',l:'Swap page',mob:'swap_vert',ext:'swap_vert',web:'swap_vert'},
+  {s:'Swap',l:'Settings',mob:null,ext:'tune',web:'tune'},
+  // STP
+  {s:'STP',l:'Back',mob:'arrow_back',ext:'arrow_back',web:null},
+  {s:'STP',l:'Add to watchlist',mob:'star',ext:null,web:null},
+  {s:'STP',l:'Remove from watchlist',mob:'star',ext:null,web:null},
+  {s:'STP',l:'View on explorer',mob:'open_in_new',ext:'open_in_new',web:null},
+  {s:'STP',l:'Pin to top',mob:'keep',ext:'keep',web:null},
+  {s:'STP',l:'Line chart view',mob:'show_chart',ext:null,web:null},
+  {s:'STP',l:'Bars chart view',mob:'candlestick_chart',ext:null,web:null},
+  {s:'STP',l:'Deposit',mob:'arrow_downward',ext:'add',web:null},
+  {s:'STP',l:'Swap',mob:'swap_horiz',ext:'swap_horiz',web:null},
+  {s:'STP',l:'Limit',mob:'trending_up',ext:null,web:null},
+  {s:'STP',l:'Send',mob:'send',ext:'send',web:null},
+  {s:'STP',l:'Homepage',mob:'language',ext:'language',web:null},
+  {s:'STP',l:'Share token',mob:null,ext:'upload',web:null},
+  {s:'STP',l:'Earn Instructions',mob:null,ext:'paid',web:null},
+  // Settings
+  {s:'Settings',l:'General',mob:'tune',ext:'tune',web:null},
+  {s:'Settings',l:'Language',mob:'globe',ext:'globe',web:null},
+  {s:'Settings',l:'Currency',mob:'attach_money',ext:'attach_money',web:null},
+  {s:'Settings',l:'Network',mob:'hub',ext:'hub',web:null},
+  {s:'Settings',l:'Address book',mob:'contact_page',ext:'contact_page',web:null},
+  {s:'Settings',l:'Notifications',mob:'notifications',ext:'notifications',web:null},
+  {s:'Settings',l:'Activity notifications',mob:null,ext:'history',web:null},
+  {s:'Settings',l:'Security & privacy',mob:'shield',ext:'shield',web:null},
+  {s:'Settings',l:'Manage apps',mob:'link_alt',ext:'link_alt',web:null},
+  {s:'Settings',l:'Spending approvals',mob:'link',ext:'link',web:null},
+  {s:'Settings',l:'Biometrics',mob:'fingerprint',ext:null,web:null},
+  {s:'Settings',l:'Auto lock',mob:null,ext:'timer',web:null},
+  {s:'Settings',l:'Change passcode',mob:'lock',ext:null,web:null},
+  {s:'Settings',l:'Request password',mob:null,ext:'key',web:null},
+  {s:'Settings',l:'Lock',mob:null,ext:'lock',web:null},
+  {s:'Settings',l:'Terms of service',mob:'docs',ext:'docs',web:null},
+  {s:'Settings',l:'Privacy policy',mob:'shield',ext:'shield',web:null},
+  {s:'Settings',l:'Log out',mob:'logout',ext:'logout',web:null},
+  {s:'Settings',l:'Support',mob:'live_help',ext:'live_help',web:null},
+  // Earn
+  {s:'Earn',l:'Max earn',mob:null,ext:null,web:'rocket_launch'},
+  {s:'Earn',l:'Insured earn',mob:null,ext:null,web:'verified_user'},
+  // Collectibles
+  {s:'Collectibles',l:'Filters',mob:'page_info',ext:'page_info',web:'page_info'},
+  {s:'Collectibles',l:'Grid view',mob:'grid_view',ext:null,web:null},
+  {s:'Collectibles',l:'List view',mob:'sort',ext:null,web:null},
+  {s:'Collectibles',l:'View on explorer',mob:'open_in_new',ext:'open_in_new',web:'open_in_new'},
+  {s:'Collectibles',l:'Save',mob:'arrow_downward',ext:null,web:null},
+  {s:'Collectibles',l:'Send',mob:'send',ext:null,web:null},
+  {s:'Collectibles',l:'Share',mob:'share',ext:null,web:null},
+  {s:'Collectibles',l:'Mark as unverified',mob:'delete',ext:null,web:null},
+  // Prediction Markets
+  {s:'Prediction Markets',l:'Intermediary trigger',mob:'help',ext:null,web:null},
+  {s:'Prediction Markets',l:'Search',mob:'search',ext:null,web:null},
+  {s:'Prediction Markets',l:'Filters',mob:'page_info',ext:null,web:null},
+  {s:'Prediction Markets',l:'Trending',mob:'trending_up',ext:null,web:null},
+  {s:'Prediction Markets',l:'New',mob:'auto_awesome',ext:null,web:null},
+  {s:'Prediction Markets',l:'Volume',mob:'bar_chart',ext:null,web:null},
+  {s:'Prediction Markets',l:'Liquidity',mob:'swap_horiz',ext:null,web:null},
+  {s:'Prediction Markets',l:'Starting soon',mob:'calendar_today',ext:null,web:null},
+  {s:'Prediction Markets',l:'Closing soon',mob:'calendar_month',ext:null,web:null},
+];
+
+// compute icon map for duplicates
+const iconMap = {};
+DATA.forEach(r => {
+  ['mob','ext','web'].forEach(p => {
+    if (!r[p]) return;
+    if (!iconMap[r[p]]) iconMap[r[p]] = new Set();
+    iconMap[r[p]].add(r.l);
+  });
+});
+
+function getStatus(r) {
+  const vals = ['mob','ext','web'].map(p => r[p]).filter(Boolean);
+  if (vals.length <= 1) return 'none';
+  const uniq = [...new Set(vals)];
+  return uniq.length === 1 ? 'ok' : 'conflict';
+}
+function isDup(r) {
+  return ['mob','ext','web'].some(p => r[p] && iconMap[r[p]] && iconMap[r[p]].size > 1);
+}
+function iconFor(r) {
+  return r.mob || r.ext || r.web;
+}
+
+// enrich
+const enriched = DATA.map(r => ({ ...r, status: getStatus(r), dup: isDup(r) }));
+
+// sections
+const sections = [...new Set(DATA.map(d => d.s))];
+const sel = document.getElementById('sectionFilter');
+sections.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+
+let currentFilter = 'all';
+let currentTab = 'table';
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.stat').forEach(b => b.classList.remove('active'));
+  const map = {all:'stat-all',ok:'stat-ok',conflicts:'stat-conflict',dup:'stat-dup'};
+  if (map[f]) document.getElementById(map[f]).classList.add('active');
+  // update fbtn
+  const idx = {all:0,conflicts:1,ok:2,dup:3}[f];
+  if (idx !== undefined) document.querySelectorAll('.fbtn')[idx]?.classList.add('active');
+  render();
+}
+function setTab(t) {
+  currentTab = t;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab')[['table','gallery','duplicates'].indexOf(t)]?.classList.add('active');
+  render();
+}
+
+function filtered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const sec = document.getElementById('sectionFilter').value;
+  return enriched.filter(r => {
+    if (sec && r.s !== sec) return false;
+    if (q && !r.l.toLowerCase().includes(q) && !['mob','ext','web'].some(p => r[p]?.includes(q))) return false;
+    if (currentFilter === 'ok') return r.status === 'ok';
+    if (currentFilter === 'conflicts') return r.status === 'conflict';
+    if (currentFilter === 'dup') return r.dup;
+    return true;
+  });
+}
+
+function iconCell(name, rowStatus, rowDup) {
+  if (!name) return '<span class="dash">—</span>';
+  const cls = rowStatus === 'conflict' ? 'conflict-icon' : (rowDup ? 'dup-icon' : '');
+  return `<div class="icon-cell">
+    <img class="icon-preview" src="${PNG(name)}" onerror="this.style.display='none'" loading="lazy">
+    <span class="icon-name ${cls}">${name}</span>
+  </div>`;
+}
+
+function badgeHtml(r) {
+  if (r.status === 'conflict') return '<span class="badge conflict">⚡ Conflict</span>';
+  if (r.status === 'ok') return '<span class="badge ok">✅ OK</span>';
+  if (r.dup) return '<span class="badge dup">⚠️ Duplicate</span>';
+  return '<span class="badge none">—</span>';
+}
+
+function renderTable(rows) {
+  if (!rows.length) return '<div class="empty">No results for this filter.</div>';
+  return `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Section</th><th>Action / Label</th>
+      <th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th>
+      <th>Status</th>
+    </tr></thead>
+    <tbody>${rows.map(r => `<tr class="${r.status === 'conflict' ? 'conflict' : (r.dup ? 'dup' : '')}">
+      <td class="section">${r.s}</td>
+      <td class="label">${r.l}</td>
+      <td>${iconCell(r.mob, r.status, r.dup)}</td>
+      <td>${iconCell(r.ext, r.status, r.dup)}</td>
+      <td>${iconCell(r.web, r.status, r.dup)}</td>
+      <td>${badgeHtml(r)}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function renderGallery(rows) {
+  if (!rows.length) return '<div class="empty">No results for this filter.</div>';
+  return `<div class="gallery">${rows.map(r => {
+    const ic = iconFor(r);
+    const cls = r.status === 'conflict' ? 'conflict' : (r.dup ? 'dup' : '');
+    return `<div class="card ${cls}">
+      <div class="card-img">${ic
+        ? `<img src="${PNG(ic)}" onerror="this.style.display='none'" loading="lazy">`
+        : '<span class="no-icon">no icon</span>'}</div>
+      <div class="card-body">
+        <div class="card-label">${r.l}</div>
+        <div class="card-section">${r.s}</div>
+        <div class="card-status">${badgeHtml(r)}</div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderDuplicates() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const dupIcons = Object.entries(iconMap)
+    .filter(([k, v]) => v.size > 1)
+    .filter(([k]) => !q || k.includes(q));
+  if (!dupIcons.length) return '<div class="empty">No duplicate icons found.</div>';
+  return `<div class="dup-panel">${dupIcons.map(([icon, labels]) => `
+    <div class="dup-card">
+      <div class="dup-icon-name">
+        <img src="${PNG(icon)}" onerror="this.style.display='none'" loading="lazy">
+        <span>${icon}</span>
+        <span class="dup-count">used for ${labels.size} different actions</span>
+      </div>
+      <div class="dup-labels">${[...labels].map(l => `<span class="dup-label">${l}</span>`).join('')}</div>
+    </div>`).join('')}</div>`;
+}
+
+function render() {
+  const rows = filtered();
+  // stats
+  document.getElementById('n-all').textContent = enriched.length;
+  document.getElementById('n-ok').textContent = enriched.filter(r => r.status === 'ok').length;
+  document.getElementById('n-conflict').textContent = enriched.filter(r => r.status === 'conflict').length;
+  document.getElementById('n-dup').textContent = enriched.filter(r => r.dup).length;
+  document.getElementById('countInfo').textContent = currentTab !== 'duplicates'
+    ? `Showing ${rows.length} of ${enriched.length} actions`
+    : '';
+
+  const v = document.getElementById('view');
+  if (currentTab === 'table') v.innerHTML = renderTable(rows);
+  else if (currentTab === 'gallery') v.innerHTML = renderGallery(rows);
+  else v.innerHTML = renderDuplicates();
+}
+
+render();
+</script>
+</body>
+</html>
