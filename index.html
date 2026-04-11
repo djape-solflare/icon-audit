@@ -5,141 +5,187 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Icon System Audit — MOB · EXT · WEB</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #111; color: #e5e5e5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+:root {
+  --yellow: #FFEF46;
+  --yellow-dim: rgba(255,239,70,0.12);
+  --yellow-border: rgba(255,239,70,0.3);
+  --bg: #02050A;
+  --bg1: #0d1117;
+  --bg2: #141a22;
+  --bg3: #1c2535;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --text2: #8a94a6;
+  --text3: #4a5568;
+  --red: #ef5350;
+  --red-bg: rgba(239,83,80,0.12);
+  --red-border: rgba(239,83,80,0.25);
+  --orange: #FF9340;
+  --orange-bg: rgba(255,147,64,0.1);
+  --orange-border: rgba(255,147,64,0.25);
+  --green: #4caf50;
+  --green-bg: rgba(76,175,80,0.1);
+  --blue: #7F9FF6;
+  --blue-bg: rgba(127,159,246,0.1);
+  --violet: #7F9FF6;
+  --font-sans: 'FK Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'FK Grotesk Mono', 'SF Mono', 'Fira Code', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; font-size: 13px; }
 
-  header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 20px 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  header h1 { font-size: 20px; font-weight: 700; color: #f5c518; white-space: nowrap; }
-  header p { font-size: 13px; color: #777; }
+/* HEADER */
+header { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.header-text { display: flex; flex-direction: column; gap: 3px; }
+header h1 { font-size: 18px; font-weight: 700; color: var(--yellow); white-space: nowrap; letter-spacing: -0.3px; font-family: var(--font-sans); }
+header p { font-size: 12px; color: var(--text2); font-family: var(--font-sans); }
+.header-logo { height: auto; flex-shrink: 0; }
+.plat-tags { display: flex; gap: 5px; align-items: center; }
+.plat-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; letter-spacing: 0.05em; }
 
-  .controls { background: #161616; border-bottom: 1px solid #222; padding: 14px 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
-  input[type=search] { background: #222; border: 1px solid #333; border-radius: 8px; color: #e5e5e5; font-size: 13px; padding: 8px 14px; width: 240px; outline: none; }
-  input[type=search]:focus { border-color: #f5c518; }
-  select { background: #222; border: 1px solid #333; border-radius: 8px; color: #e5e5e5; font-size: 13px; padding: 8px 12px; outline: none; cursor: pointer; }
-  select:focus { border-color: #f5c518; }
+/* STATS */
+.stats { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; text-align: center; cursor: pointer; transition: border-color .15s; min-width: 80px; }
+.stat:hover { border-color: var(--border2); }
+.stat.active { border-color: var(--yellow); background: var(--yellow-dim); }
+.stat .n { font-size: 20px; font-weight: 700; line-height: 1.2; }
+.stat .l { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.stat.c-yellow .n { color: var(--yellow); }
+.stat.c-green .n { color: var(--green); }
+.stat.c-red .n { color: var(--red); }
+.stat.c-orange .n { color: var(--orange); }
+.stat.c-blue .n { color: var(--blue); }
 
-  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-  .fbtn { background: #222; border: 1px solid #333; border-radius: 20px; color: #aaa; cursor: pointer; font-size: 12px; padding: 5px 14px; transition: all .15s; white-space: nowrap; }
-  .fbtn:hover { border-color: #555; color: #fff; }
-  .fbtn.active { background: #f5c518; border-color: #f5c518; color: #111; font-weight: 600; }
+/* CONTROLS */
+.controls { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
+input[type=search] { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 12px; font-family: var(--font-sans); padding: 7px 12px; width: 220px; outline: none; }
+input[type=search]:focus { border-color: var(--yellow); }
+select { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 12px; font-family: var(--font-sans); padding: 7px 10px; outline: none; cursor: pointer; }
+.fbtn { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); cursor: pointer; font-size: 11px; font-family: var(--font-sans); padding: 4px 12px; transition: all .15s; white-space: nowrap; }
+.fbtn:hover { border-color: var(--border2); color: var(--text); }
+.fbtn.active { background: var(--yellow); border-color: var(--yellow); color: #000; font-weight: 600; }
 
-  .stats { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
-  .stat { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 8px; padding: 6px 14px; text-align: center; cursor: pointer; transition: border-color .15s; }
-  .stat:hover { border-color: #444; }
-  .stat.active { border-color: #f5c518; }
-  .stat .n { font-size: 18px; font-weight: 700; }
-  .stat .l { font-size: 11px; color: #666; margin-top: 1px; }
-  .stat.green .n { color: #4caf50; }
-  .stat.red .n { color: #ef5350; }
-  .stat.orange .n { color: #ff9800; }
+/* TABS */
+.tabs { display: flex; background: var(--bg1); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
+.tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text3); cursor: pointer; font-size: 12px; font-family: var(--font-sans); padding: 11px 16px; transition: all .15s; white-space: nowrap; }
+.tab:hover { color: var(--text2); }
+.tab.active { border-bottom-color: var(--yellow); color: var(--yellow); font-weight: 600; }
+.tabs { display: flex; background: var(--bg1); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
+.tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text3); cursor: pointer; font-size: 12px; padding: 11px 16px; transition: all .15s; white-space: nowrap; }
+.tab:hover { color: var(--text2); }
+.tab.active { border-bottom-color: var(--yellow); color: var(--yellow); font-weight: 600; }
 
-  .tabs { display: flex; gap: 0; background: #161616; border-bottom: 1px solid #222; padding: 0 32px; }
-  .tab { background: none; border: none; border-bottom: 2px solid transparent; color: #666; cursor: pointer; font-size: 13px; padding: 12px 18px; transition: all .15s; }
-  .tab:hover { color: #ccc; }
-  .tab.active { border-bottom-color: #f5c518; color: #f5c518; font-weight: 600; }
+main { padding: 20px 24px; }
+.count-info { color: var(--text3); font-size: 11px; margin-bottom: 14px; }
 
-  main { padding: 24px 32px; max-width: 1400px; }
+/* TABLE */
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--bg2); }
+th { color: var(--text3); font-weight: 500; padding: 10px 14px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; font-family: var(--font-sans); }
+th.plat { color: var(--yellow); font-family: var(--font-mono); letter-spacing: 0.1em; }
+tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background .1s; }
+tbody tr:hover { background: var(--bg2); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr.conflict { background: var(--red-bg); }
+tbody tr.conflict:hover { background: rgba(239,83,80,0.18); }
+tbody tr.dup { background: var(--orange-bg); }
+tbody tr.dup:hover { background: rgba(255,147,64,0.15); }
+td { padding: 9px 14px; vertical-align: middle; }
+td.lbl { font-weight: 500; color: var(--text); white-space: nowrap; }
+td.seccell { font-size: 11px; color: var(--text3); }
 
-  /* TABLE */
-  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #222; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: #1a1a1a; }
-  th { color: #888; font-weight: 500; padding: 12px 16px; text-align: left; white-space: nowrap; border-bottom: 1px solid #222; }
-  th.plat { color: #f5c518; }
-  tbody tr { border-bottom: 1px solid #1e1e1e; transition: background .1s; }
-  tbody tr:hover { background: #1c1c1c; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr.conflict { background: #1f1212; }
-  tbody tr.conflict:hover { background: #231515; }
-  tbody tr.dup { background: #1f1a10; }
-  tbody tr.dup:hover { background: #231e12; }
-  td { padding: 10px 16px; vertical-align: middle; }
-  td.section { color: #555; font-size: 12px; }
-  td.label { font-weight: 500; color: #ddd; }
+.sec-tag { background: var(--bg3); border-radius: 3px; color: var(--text2); display: inline-block; font-size: 10px; margin: 1px 2px 1px 0; padding: 1px 5px; white-space: nowrap; }
 
-  .icon-cell { display: flex; align-items: center; gap: 8px; }
-  .icon-preview { width: 24px; height: 24px; filter: invert(1) opacity(0.7); flex-shrink: 0; }
-  .icon-name { font-family: monospace; font-size: 12px; color: #bbb; background: #1e1e1e; padding: 2px 7px; border-radius: 4px; }
-  .icon-name.conflict-icon { background: #2a1515; color: #f87171; }
-  .icon-name.dup-icon { background: #2a1e0a; color: #fb923c; }
+.icell { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.iprev { width: 18px; height: 18px; filter: invert(1) opacity(0.65); flex-shrink: 0; }
+.iname { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--text2); background: var(--bg3); padding: 2px 6px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; display: inline-block; }
+.iname.ci { background: var(--red-bg); color: #f87171; }
+.iname.di { background: var(--orange-bg); color: var(--orange); }
 
-  .badge { border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; white-space: nowrap; }
-  .badge.ok { background: #1a2e1a; color: #4caf50; }
-  .badge.conflict { background: #2e1a1a; color: #ef5350; }
-  .badge.dup { background: #2e2010; color: #ff9800; }
-  .badge.none { color: #444; }
+.badge { border-radius: 4px; display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; white-space: nowrap; }
+.badge.ok { background: var(--green-bg); color: var(--green); }
+.badge.conflict { background: var(--red-bg); color: var(--red); }
+.badge.dup { background: var(--orange-bg); color: var(--orange); }
+.badge.none { color: var(--text3); }
+.dash { color: var(--text3); }
 
-  .dash { color: #333; }
+/* GALLERY */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.card { background: var(--bg1); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all .15s; }
+.card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.card.conflict { border-color: var(--red-border); }
+.card.dup { border-color: var(--orange-border); }
+.card-img { align-items: center; background: var(--bg2); display: flex; height: 64px; justify-content: center; }
+.card-img img { filter: invert(1) opacity(0.7); height: 28px; width: 28px; }
+.card-body { padding: 8px 9px; }
+.card-lbl { color: var(--text); font-size: 10px; font-weight: 500; line-height: 1.3; margin-bottom: 3px; }
+.card-sec { color: var(--text3); font-size: 9px; }
+.card-status { font-size: 10px; margin-top: 4px; }
 
-  /* GALLERY */
-  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-  .card { background: #1a1a1a; border: 1px solid #252525; border-radius: 10px; cursor: pointer; overflow: hidden; transition: all .15s; }
-  .card:hover { border-color: #444; transform: translateY(-1px); }
-  .card.conflict { border-color: #3d1f1f; }
-  .card.dup { border-color: #3d2e10; }
-  .card-img { align-items: center; background: #222; display: flex; height: 80px; justify-content: center; }
-  .card-img img { filter: invert(1) opacity(0.75); height: 36px; width: 36px; }
-  .card-img .no-icon { color: #444; font-size: 11px; }
-  .card-body { padding: 8px 10px; }
-  .card-label { color: #ccc; font-size: 11px; font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
-  .card-section { color: #555; font-size: 10px; }
-  .card-status { font-size: 10px; margin-top: 4px; }
+/* ICON INDEX */
+.ii-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.ii-card { background: var(--bg1); border-radius: 10px; overflow: hidden; }
+.ii-card.clean { border: 1px solid var(--border); }
+.ii-card.problem { border: 1px solid var(--orange-border); }
+.ii-header { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.ii-img { background: var(--bg2); border-radius: 7px; padding: 9px; flex-shrink: 0; }
+.ii-img img { display: block; filter: invert(1) opacity(0.8); height: 28px; width: 28px; }
+.ii-name { font-family: 'SF Mono','Fira Code',monospace; font-size: 13px; font-weight: 700; color: var(--yellow); word-break: break-all; }
+.ii-count { color: var(--text3); font-size: 11px; margin-top: 2px; }
+.ii-badge-ok { background: var(--green-bg); border-radius: 4px; color: var(--green); font-size: 10px; font-weight: 700; padding: 2px 7px; margin-left: auto; flex-shrink: 0; }
+.ii-badge-dup { background: var(--orange-bg); border-radius: 4px; color: var(--orange); font-size: 10px; font-weight: 700; padding: 2px 7px; margin-left: auto; flex-shrink: 0; }
+.ii-actions-wrap { border-top: 1px solid var(--border); }
+.ii-action-row { border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: flex-start; gap: 10px; padding: 7px 14px; }
+.ii-action-row:last-child { border-bottom: none; }
+.ii-action-lbl { color: var(--text); font-size: 11px; font-weight: 500; flex: 1; min-width: 0; }
+.ii-action-sec { color: var(--text3); font-size: 10px; flex-shrink: 0; text-align: right; max-width: 110px; }
 
-  /* DUPLICATE PANEL */
-  .dup-panel { display: flex; flex-direction: column; gap: 10px; }
-  .dup-card { background: #1a1a1a; border: 1px solid #3d2e10; border-radius: 10px; padding: 16px; }
-  .dup-icon-name { color: #f5c518; font-family: monospace; font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-  .dup-icon-name img { filter: invert(1) opacity(0.7); height: 28px; width: 28px; }
-  .dup-labels { display: flex; flex-wrap: wrap; gap: 6px; }
-  .dup-label { background: #2a1e0a; border: 1px solid #3d2e10; border-radius: 4px; color: #fb923c; font-size: 12px; padding: 3px 10px; }
-  .dup-count { color: #666; font-size: 12px; }
+.ii-sug { background: rgba(127,159,246,0.07); border: 1px solid rgba(127,159,246,0.2); border-radius: 7px; margin: 0 14px 12px; padding: 10px 12px; }
+.ii-sug-title { color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: .06em; margin-bottom: 8px; text-transform: uppercase; }
+.ii-sug-rows { display: flex; flex-direction: column; gap: 6px; }
+.ii-sug-row { display: flex; align-items: center; gap: 8px; font-size: 11px; flex-wrap: wrap; }
+.ii-sug-action { color: var(--text2); flex: 1; min-width: 120px; }
+.ii-sug-keep { color: var(--text3); font-family: monospace; font-size: 10px; }
+.ii-sug-arrow { color: var(--text3); }
+.ii-sug-new { align-items: center; background: var(--bg3); border: 1px solid rgba(165,214,167,0.25); border-radius: 5px; display: inline-flex; gap: 5px; padding: 3px 8px; }
+.ii-sug-new img { filter: invert(1) opacity(0.7); height: 13px; width: 13px; }
+.ii-sug-new span { color: #a5d6a7; font-family: monospace; font-size: 10px; }
+.ii-sug-note { color: var(--text2); font-size: 10px; font-style: italic; margin-top: 4px; }
 
-  .empty { color: #444; padding: 60px; text-align: center; font-size: 14px; }
-  .count-info { color: #555; font-size: 12px; margin-bottom: 16px; }
+.ii-topstats { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.ii-topstat { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; text-align: center; }
+.ii-topstat .n { font-size: 22px; font-weight: 700; }
+.ii-topstat .l { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+.dup-panel { display: flex; flex-direction: column; gap: 10px; }
+.dup-card { background: var(--bg1); border: 1px solid var(--orange-border); border-radius: 10px; overflow: hidden; }
+
+.empty { color: var(--text3); padding: 60px; text-align: center; }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>🎯 Icon System Audit</h1>
-    <p>MOB · EXT · WEB — Google Material Icons consistency analysis</p>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" fill="none" style="height:48px;width:48px;flex-shrink:0"><g clip-path="url(#hclip)"><path d="M63.2951 1H226.705C261.11 1 289 28.8905 289 63.2951V226.705C289 261.11 261.11 289 226.705 289H63.2951C28.8905 289 1 261.11 1 226.705V63.2951C1 28.8905 28.8905 1 63.2951 1Z" fill="#FFEF46" stroke="#EEDA0F" stroke-width="2"/><path d="M140.548 153.231L154.832 139.432L181.462 148.147C198.893 153.958 207.609 164.61 207.609 179.62C207.609 190.999 203.251 198.504 194.536 208.188L191.873 211.093L192.841 204.314C196.714 179.62 189.452 168.968 165.484 161.22L140.548 153.231ZM104.717 68.739L177.347 92.9488L161.61 107.959L123.843 95.3698C110.77 91.012 106.412 83.9911 104.717 69.2232V68.739ZM100.359 191.725L116.822 175.988L147.811 186.157C164.031 191.483 169.599 198.504 167.905 216.177L100.359 191.725ZM79.539 121.516C79.539 116.917 81.9599 112.559 86.0756 108.927C90.4334 115.222 97.9384 120.79 109.801 124.664L135.464 133.137L121.18 146.937L96.0016 138.705C84.3809 134.832 79.539 129.021 79.539 121.516ZM155.558 248.618C208.819 213.272 237.387 189.304 237.387 159.768C237.387 140.158 225.766 129.263 200.104 120.79L180.736 114.253L233.756 63.4128L223.103 52.0342L207.367 65.8337L133.043 41.3818C110.043 48.8869 80.9916 70.9178 80.9916 92.9487C80.9916 95.3697 81.2337 97.7907 81.96 100.454C62.8342 111.348 55.0871 121.516 55.0871 134.105C55.0871 145.968 61.3816 157.831 81.4758 164.368L97.4542 169.694L42.2559 222.713L52.9082 234.092L70.0972 218.356L155.558 248.618Z" fill="#02050A"/></g><defs><clipPath id="hclip"><rect width="290" height="290" fill="white"/></clipPath></defs></svg>
+  <div class="header-text">
+    <h1>Icon System Audit</h1>
+    <p>Google Material Icons consistency analysis</p>
   </div>
-  <div class="stats">
-    <div class="stat" id="stat-all" onclick="setFilter('all')">
-      <div class="n" id="n-all">—</div><div class="l">Total</div>
-    </div>
-    <div class="stat green" id="stat-ok" onclick="setFilter('ok')">
-      <div class="n" id="n-ok">—</div><div class="l">Consistent ✓</div>
-    </div>
-    <div class="stat red" id="stat-conflict" onclick="setFilter('conflicts')">
-      <div class="n" id="n-conflict">—</div><div class="l">⚡ Conflict</div>
-    </div>
-    <div class="stat orange" id="stat-dup" onclick="setFilter('dup')">
-      <div class="n" id="n-dup">—</div><div class="l">⚠️ Duplicate</div>
-    </div>
+  <div class="plat-tags">
+    <span class="plat-tag">MOB</span>
+    <span class="plat-tag">EXT</span>
+    <span class="plat-tag">WEB</span>
   </div>
+  <div class="stats" id="statsBar"></div>
 </header>
-
-<div class="controls">
-  <input type="search" id="search" placeholder="Search action or icon name…" oninput="render()">
-  <select id="sectionFilter" onchange="render()">
-    <option value="">All sections</option>
-  </select>
-  <div class="filter-btns">
-    <button class="fbtn active" onclick="setFilter('all')">All</button>
-    <button class="fbtn" onclick="setFilter('conflicts')">⚡ Conflicts</button>
-    <button class="fbtn" onclick="setFilter('ok')">✅ Consistent</button>
-    <button class="fbtn" onclick="setFilter('dup')">⚠️ Duplicates</button>
-  </div>
+<div class="controls" id="controls">
+  <input type="search" id="search" placeholder="Search action or icon…" oninput="render()">
+  <select id="secFilter" onchange="render()"><option value="">All sections</option></select>
+  <div style="display:flex;gap:6px;flex-wrap:wrap" id="filterBtns"></div>
 </div>
-
-<div class="tabs">
-  <button class="tab active" onclick="setTab('table')">📋 Table</button>
-  <button class="tab" onclick="setTab('gallery')">🖼 Gallery</button>
-  <button class="tab" onclick="setTab('duplicates')">⚠️ Same icon, different action</button>
-</div>
-
+<div class="tabs" id="tabBar"></div>
 <main>
   <div class="count-info" id="countInfo"></div>
   <div id="view"></div>
@@ -147,267 +193,374 @@
 
 <script>
 const BASE = 'https://fonts.gstatic.com/s/i/materialicons';
-const PNG = name => name ? `${BASE}/${name}/v12/24px.png` : null;
+const PNG = n => n ? `${BASE}/${n}/v12/24px.png` : null;
 
+// ── DATA ─────────────────────────────────────────────────────────────────────
 const DATA = [
-  // Hero Card
-  {s:'Hero Card',l:'Copy',mob:'content_copy',ext:'content_copy',web:'content_copy'},
-  {s:'Hero Card',l:'Card',mob:'credit_card',ext:null,web:null},
-  {s:'Hero Card',l:'Customize',mob:'brush',ext:'brush',web:'brush'},
-  {s:'Hero Card',l:'Scan QR',mob:'qr_code',ext:null,web:null},
-  {s:'Hero Card',l:'Rename wallet',mob:'edit',ext:null,web:null},
-  {s:'Hero Card',l:'Edit background',mob:'brush',ext:null,web:null},
-  {s:'Hero Card',l:'Hide balance',mob:'visibility_off',ext:'visibility_off',web:'visibility_off'},
-  {s:'Hero Card',l:'Show balance',mob:'visibility',ext:'visibility',web:'visibility'},
-  {s:'Hero Card',l:'Settings',mob:null,ext:null,web:'settings'},
-  {s:'Hero Card',l:'Deposit',mob:null,ext:'add',web:'add'},
-  {s:'Hero Card',l:'Buy with card or bank',mob:null,ext:'attach_money',web:'attach_money'},
-  {s:'Hero Card',l:'Receive crypto',mob:null,ext:'qr_code',web:'qr_code'},
-  {s:'Hero Card',l:'Stake',mob:null,ext:null,web:'savings'},
-  {s:'Hero Card',l:'Send',mob:null,ext:null,web:'send'},
-  {s:'Hero Card',l:'Three dots',mob:'more_vert',ext:'more_vert',web:null},
-  {s:'Hero Card',l:'Expand view',mob:null,ext:'expand_content',web:null},
-  {s:'Hero Card',l:'Sidebar',mob:null,ext:'last_page',web:null},
-  {s:'Hero Card',l:'Popup',mob:null,ext:'float_landscape_2',web:null},
-  // Portfolio
-  {s:'Portfolio',l:'Deposit',mob:'arrow_downward',ext:null,web:null},
-  {s:'Portfolio',l:'Swap',mob:'swap_horiz',ext:null,web:null},
-  {s:'Portfolio',l:'Stake',mob:'savings',ext:null,web:null},
-  {s:'Portfolio',l:'Send',mob:'send',ext:null,web:null},
-  {s:'Portfolio',l:'Stocks placeholder',mob:'bar_chart',ext:null,web:null},
-  {s:'Portfolio',l:'Activity placeholder',mob:'rotate_left',ext:null,web:null},
-  {s:'Portfolio',l:'Token balance history',mob:null,ext:'finance_mode',web:null},
-  // Bottom nav
-  {s:'Bottom nav',l:'Portfolio',mob:'wallet',ext:'wallet',web:'wallet'},
-  {s:'Bottom nav',l:'Market',mob:'bar_chart',ext:'bar_chart',web:'bar_chart'},
-  {s:'Bottom nav',l:'Swap',mob:'swap_horiz',ext:'swap_horiz',web:null},
-  {s:'Bottom nav',l:'Explore',mob:'language',ext:'language',web:'language'},
-  {s:'Bottom nav',l:'Activity',mob:null,ext:'history',web:'history'},
-  {s:'Bottom nav',l:'Settings',mob:'settings',ext:'settings',web:null},
-  // Side nav
-  {s:'Side nav',l:'Portfolio',mob:null,ext:null,web:'wallet'},
-  {s:'Side nav',l:'Tokens',mob:null,ext:null,web:'database'},
-  {s:'Side nav',l:'Predictions',mob:null,ext:null,web:'query_stats'},
-  {s:'Side nav',l:'Stocks',mob:null,ext:null,web:'finance'},
-  {s:'Side nav',l:'Staking',mob:null,ext:null,web:'savings'},
-  {s:'Side nav',l:'Earn',mob:null,ext:null,web:'paid'},
-  {s:'Side nav',l:'Collections',mob:null,ext:null,web:'grid_view'},
-  {s:'Side nav',l:'Explore',mob:null,ext:null,web:'language'},
-  {s:'Side nav',l:'Market',mob:null,ext:null,web:'bar_chart'},
-  {s:'Side nav',l:'Trade',mob:null,ext:null,web:'swap_horiz'},
-  {s:'Side nav',l:'Activity',mob:null,ext:null,web:'history'},
-  // Swap
-  {s:'Swap',l:'Swap page',mob:'swap_vert',ext:'swap_vert',web:'swap_vert'},
-  {s:'Swap',l:'Settings',mob:null,ext:'tune',web:'tune'},
-  // STP
-  {s:'STP',l:'Back',mob:'arrow_back',ext:'arrow_back',web:null},
-  {s:'STP',l:'Add to watchlist',mob:'star',ext:null,web:null},
-  {s:'STP',l:'Remove from watchlist',mob:'star',ext:null,web:null},
-  {s:'STP',l:'View on explorer',mob:'open_in_new',ext:'open_in_new',web:null},
-  {s:'STP',l:'Pin to top',mob:'keep',ext:'keep',web:null},
-  {s:'STP',l:'Line chart view',mob:'show_chart',ext:null,web:null},
-  {s:'STP',l:'Bars chart view',mob:'candlestick_chart',ext:null,web:null},
-  {s:'STP',l:'Deposit',mob:'arrow_downward',ext:'add',web:null},
-  {s:'STP',l:'Swap',mob:'swap_horiz',ext:'swap_horiz',web:null},
-  {s:'STP',l:'Limit',mob:'trending_up',ext:null,web:null},
-  {s:'STP',l:'Send',mob:'send',ext:'send',web:null},
-  {s:'STP',l:'Homepage',mob:'language',ext:'language',web:null},
-  {s:'STP',l:'Share token',mob:null,ext:'upload',web:null},
-  {s:'STP',l:'Earn Instructions',mob:null,ext:'paid',web:null},
-  // Settings
-  {s:'Settings',l:'General',mob:'tune',ext:'tune',web:null},
-  {s:'Settings',l:'Language',mob:'globe',ext:'globe',web:null},
-  {s:'Settings',l:'Currency',mob:'attach_money',ext:'attach_money',web:null},
-  {s:'Settings',l:'Network',mob:'hub',ext:'hub',web:null},
-  {s:'Settings',l:'Address book',mob:'contact_page',ext:'contact_page',web:null},
-  {s:'Settings',l:'Notifications',mob:'notifications',ext:'notifications',web:null},
-  {s:'Settings',l:'Activity notifications',mob:null,ext:'history',web:null},
-  {s:'Settings',l:'Security & privacy',mob:'shield',ext:'shield',web:null},
-  {s:'Settings',l:'Manage apps',mob:'link_alt',ext:'link_alt',web:null},
-  {s:'Settings',l:'Spending approvals',mob:'link',ext:'link',web:null},
-  {s:'Settings',l:'Biometrics',mob:'fingerprint',ext:null,web:null},
-  {s:'Settings',l:'Auto lock',mob:null,ext:'timer',web:null},
-  {s:'Settings',l:'Change passcode',mob:'lock',ext:null,web:null},
-  {s:'Settings',l:'Request password',mob:null,ext:'key',web:null},
-  {s:'Settings',l:'Lock',mob:null,ext:'lock',web:null},
-  {s:'Settings',l:'Terms of service',mob:'docs',ext:'docs',web:null},
-  {s:'Settings',l:'Privacy policy',mob:'shield',ext:'shield',web:null},
-  {s:'Settings',l:'Log out',mob:'logout',ext:'logout',web:null},
-  {s:'Settings',l:'Support',mob:'live_help',ext:'live_help',web:null},
-  // Earn
-  {s:'Earn',l:'Max earn',mob:null,ext:null,web:'rocket_launch'},
-  {s:'Earn',l:'Insured earn',mob:null,ext:null,web:'verified_user'},
-  // Collectibles
-  {s:'Collectibles',l:'Filters',mob:'page_info',ext:'page_info',web:'page_info'},
-  {s:'Collectibles',l:'Grid view',mob:'grid_view',ext:null,web:null},
-  {s:'Collectibles',l:'List view',mob:'sort',ext:null,web:null},
-  {s:'Collectibles',l:'View on explorer',mob:'open_in_new',ext:'open_in_new',web:'open_in_new'},
-  {s:'Collectibles',l:'Save',mob:'arrow_downward',ext:null,web:null},
-  {s:'Collectibles',l:'Send',mob:'send',ext:null,web:null},
-  {s:'Collectibles',l:'Share',mob:'share',ext:null,web:null},
-  {s:'Collectibles',l:'Mark as unverified',mob:'delete',ext:null,web:null},
-  // Prediction Markets
-  {s:'Prediction Markets',l:'Intermediary trigger',mob:'help',ext:null,web:null},
-  {s:'Prediction Markets',l:'Search',mob:'search',ext:null,web:null},
-  {s:'Prediction Markets',l:'Filters',mob:'page_info',ext:null,web:null},
-  {s:'Prediction Markets',l:'Trending',mob:'trending_up',ext:null,web:null},
-  {s:'Prediction Markets',l:'New',mob:'auto_awesome',ext:null,web:null},
-  {s:'Prediction Markets',l:'Volume',mob:'bar_chart',ext:null,web:null},
-  {s:'Prediction Markets',l:'Liquidity',mob:'swap_horiz',ext:null,web:null},
-  {s:'Prediction Markets',l:'Starting soon',mob:'calendar_today',ext:null,web:null},
-  {s:'Prediction Markets',l:'Closing soon',mob:'calendar_month',ext:null,web:null},
+  {l:'Copy',                    mob:'content_copy',    ext:'content_copy',    web:'content_copy',    s:['Hero Card']},
+  {l:'Card / Wallet',           mob:'credit_card',     ext:null,              web:null,              s:['Hero Card']},
+  {l:'Expand view',             mob:null,              ext:'expand_content',  web:null,              s:['Hero Card']},
+  {l:'Sidebar',                 mob:null,              ext:'last_page',       web:null,              s:['Hero Card']},
+  {l:'Popup',                   mob:null,              ext:'float_landscape_2',web:null,             s:['Hero Card']},
+  {l:'Customize / Edit background',mob:'brush',        ext:'brush',           web:'brush',           s:['Hero Card']},
+  {l:'Hide balance',            mob:'visibility_off',  ext:'visibility_off',  web:'visibility_off',  s:['Hero Card']},
+  {l:'Show balance',            mob:'visibility',      ext:'visibility',      web:'visibility',      s:['Hero Card']},
+  {l:'Three dots',              mob:'more_vert',       ext:'more_vert',       web:null,              s:['Hero Card','STP']},
+  {l:'Settings',                mob:'settings',        ext:'settings',        web:'settings',        s:['Hero Card','Nav','Swap']},
+  {l:'Deposit',                 mob:'arrow_downward',  ext:'add',             web:'add',             s:['Hero Card','Portfolio','STP']},
+  {l:'Buy with card or bank',   mob:null,              ext:'attach_money',    web:'attach_money',    s:['Hero Card']},
+  {l:'Receive crypto',          mob:null,              ext:'qr_code',         web:'qr_code',         s:['Hero Card']},
+  {l:'Scan QR',                 mob:'qr_code',         ext:null,              web:null,              s:['Hero Card']},
+  {l:'Rename wallet',           mob:'edit',            ext:null,              web:null,              s:['Hero Card']},
+  {l:'Stake / Staking',         mob:'savings',         ext:null,              web:'savings',         s:['Hero Card','Portfolio','Nav']},
+  {l:'Send',                    mob:'send',            ext:'send',            web:'send',            s:['Hero Card','Portfolio','STP','Collectibles']},
+  {l:'Token balance history',   mob:null,              ext:'finance_mode',    web:null,              s:['Portfolio']},
+  {l:'Stocks placeholder',      mob:'bar_chart',       ext:null,              web:null,              s:['Portfolio']},
+  {l:'Activity placeholder',    mob:'rotate_left',     ext:null,              web:null,              s:['Portfolio']},
+  {l:'Portfolio',               mob:'wallet',          ext:'wallet',          web:'wallet',          s:['Nav']},
+  {l:'Market',                  mob:'bar_chart',       ext:'bar_chart',       web:'bar_chart',       s:['Nav']},
+  {l:'Swap / Trade',            mob:'swap_horiz',      ext:'swap_horiz',      web:'swap_horiz',      s:['Nav','STP','Portfolio','Swap','Prediction Markets']},
+  {l:'Explore',                 mob:'language',        ext:'language',        web:'language',        s:['Nav']},
+  {l:'Activity',                mob:null,              ext:'history',         web:'history',         s:['Nav','Settings']},
+  {l:'Tokens',                  mob:null,              ext:null,              web:'database',        s:['Nav']},
+  {l:'Predictions',             mob:null,              ext:null,              web:'query_stats',     s:['Nav']},
+  {l:'Stocks',                  mob:null,              ext:null,              web:'finance',         s:['Nav']},
+  {l:'Earn',                    mob:null,              ext:'paid',            web:'paid',            s:['Nav','STP']},
+  {l:'Collections',             mob:null,              ext:null,              web:'grid_view',       s:['Nav']},
+  {l:'Swap page (toggle)',      mob:'swap_vert',       ext:'swap_vert',       web:'swap_vert',       s:['Swap']},
+  {l:'Back',                    mob:'arrow_back',      ext:'arrow_back',      web:null,              s:['STP']},
+  {l:'Add to watchlist',        mob:'star',            ext:null,              web:null,              s:['STP']},
+  {l:'Remove from watchlist',   mob:'star',            ext:null,              web:null,              s:['STP']},
+  {l:'Share token',             mob:null,              ext:'upload',          web:null,              s:['STP']},
+  {l:'View on explorer',        mob:'open_in_new',     ext:'open_in_new',     web:'open_in_new',     s:['STP','Collectibles']},
+  {l:'Pin to top',              mob:'keep',            ext:'keep',            web:null,              s:['STP']},
+  {l:'Line chart view',         mob:'show_chart',      ext:null,              web:null,              s:['STP']},
+  {l:'Candlestick chart view',  mob:'candlestick_chart',ext:null,             web:null,              s:['STP']},
+  {l:'Limit order',             mob:'trending_up',     ext:null,              web:null,              s:['STP']},
+  {l:'Homepage',                mob:'language',        ext:'language',        web:null,              s:['STP']},
+  {l:'Earn Instructions',       mob:null,              ext:'paid',            web:null,              s:['STP']},
+  {l:'General',                 mob:'tune',            ext:'tune',            web:null,              s:['Settings']},
+  {l:'Language (setting)',      mob:'globe',           ext:'globe',           web:null,              s:['Settings']},
+  {l:'Currency',                mob:'attach_money',    ext:'attach_money',    web:null,              s:['Settings']},
+  {l:'Network',                 mob:'hub',             ext:'hub',             web:null,              s:['Settings']},
+  {l:'Address book',            mob:'contact_page',    ext:'contact_page',    web:null,              s:['Settings']},
+  {l:'Notifications',           mob:'notifications',   ext:'notifications',   web:null,              s:['Settings']},
+  {l:'Security & privacy',      mob:'shield',          ext:'shield',          web:null,              s:['Settings']},
+  {l:'Privacy policy',          mob:'shield',          ext:'shield',          web:null,              s:['Settings']},
+  {l:'Manage apps',             mob:'link_alt',        ext:'link_alt',        web:null,              s:['Settings']},
+  {l:'Spending approvals',      mob:'link',            ext:'link',            web:null,              s:['Settings']},
+  {l:'Biometrics',              mob:'fingerprint',     ext:null,              web:null,              s:['Settings']},
+  {l:'Auto lock',               mob:null,              ext:'timer',           web:null,              s:['Settings']},
+  {l:'Change passcode / Lock',  mob:'lock',            ext:'lock',            web:null,              s:['Settings']},
+  {l:'Request password',        mob:null,              ext:'key',             web:null,              s:['Settings']},
+  {l:'Terms of service',        mob:'docs',            ext:'docs',            web:null,              s:['Settings']},
+  {l:'Log out',                 mob:'logout',          ext:'logout',          web:null,              s:['Settings']},
+  {l:'Support',                 mob:'live_help',       ext:'live_help',       web:null,              s:['Settings']},
+  {l:'Max earn',                mob:null,              ext:null,              web:'rocket_launch',   s:['Earn']},
+  {l:'Insured earn',            mob:null,              ext:null,              web:'verified_user',   s:['Earn']},
+  {l:'Filters',                 mob:'page_info',       ext:'page_info',       web:'page_info',       s:['Collectibles','Prediction Markets']},
+  {l:'Grid view',               mob:'grid_view',       ext:null,              web:null,              s:['Collectibles']},
+  {l:'List view',               mob:'sort',            ext:null,              web:null,              s:['Collectibles']},
+  {l:'Save',                    mob:'arrow_downward',  ext:null,              web:null,              s:['Collectibles']},
+  {l:'Share',                   mob:'share',           ext:null,              web:null,              s:['Collectibles']},
+  {l:'Mark as unverified',      mob:'delete',          ext:null,              web:null,              s:['Collectibles']},
+  {l:'Intermediary trigger',    mob:'help',            ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Search',                  mob:'search',          ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Trending',                mob:'trending_up',     ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'New',                     mob:'auto_awesome',    ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Volume',                  mob:'bar_chart',       ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Liquidity',               mob:'swap_horiz',      ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Starting soon',           mob:'calendar_today',  ext:null,              web:null,              s:['Prediction Markets']},
+  {l:'Closing soon',            mob:'calendar_month',  ext:null,              web:null,              s:['Prediction Markets']},
 ];
 
-// compute icon map for duplicates
+// ── SUGGESTIONS ───────────────────────────────────────────────────────────────
+// key = action label, value = { icon, note? }
+const SUGS = {
+  // bar_chart duplicates
+  'Stocks placeholder':        { icon: 'candlestick_chart', note: 'More specific to financial data visualization' },
+  'Volume':                    { icon: 'equalizer', note: 'Suggests quantity/magnitude, not market chart' },
+  // swap_horiz duplicates
+  'Liquidity':                 { icon: 'water_drop', note: 'Liquid assets metaphor, distinct from swap' },
+  // language duplicates
+  'Homepage':                  { icon: 'captive_portal', note: 'Avoid "home" — used in browser nav for going back to home. captive_portal suggests a web entry point' },
+  // arrow_downward duplicates
+  'Save':                      { icon: 'download', note: 'Semantically clearer for saving/downloading an NFT' },
+  // attach_money duplicates
+  'Currency':                  { icon: 'currency_exchange', note: 'More specific to currency settings vs. card payments' },
+  // shield duplicates
+  'Privacy policy':            { icon: 'policy', note: 'Document-like, distinct from security settings' },
+  // paid duplicates — treat nav Earn as keeper
+  'Earn Instructions':         { icon: 'info', note: 'Instructions are informational, not a payment action' },
+  // grid_view duplicates
+  'Grid view':                 { icon: 'grid_on', note: 'Collections nav uses grid_view — grid_on for the toggle is distinct' },
+  // brush duplicates — keep for Customize, change Edit background
+  'Customize / Edit background': { icon: 'brush', keep: true, keepNote: 'Primary customize action keeps brush' },
+  // star — both keep star, different fill
+  'Add to watchlist':          { icon: 'star', keep: true, keepNote: 'Filled star' },
+  'Remove from watchlist':     { icon: 'star', keep: true, keepNote: 'Outlined star (star_border) — same icon name, different fill variant', note: 'Use outlined/border variant of the same star icon' },
+  // trending_up duplicates
+  'Limit order':               { icon: 'price_change', note: 'Suggests price threshold/target more clearly' },
+  // lock / key
+  'Request password':          { icon: 'password', note: 'More specific than key for password entry' },
+};
+
+// ── ICON MAP ──────────────────────────────────────────────────────────────────
 const iconMap = {};
 DATA.forEach(r => {
-  ['mob','ext','web'].forEach(p => {
-    if (!r[p]) return;
-    if (!iconMap[r[p]]) iconMap[r[p]] = new Set();
-    iconMap[r[p]].add(r.l);
+  [...new Set([r.mob, r.ext, r.web].filter(Boolean))].forEach(ic => {
+    if (!iconMap[ic]) iconMap[ic] = [];
+    if (!iconMap[ic].find(x => x.label === r.l))
+      iconMap[ic].push({ label: r.l, sections: r.s });
   });
 });
 
+// ── STATUS ────────────────────────────────────────────────────────────────────
 function getStatus(r) {
+  const pairs = [['mob','ext'],['mob','web'],['ext','web']];
+  for (const [a,b] of pairs)
+    if (r[a] && r[b] && r[a] !== r[b]) return 'conflict';
   const vals = ['mob','ext','web'].map(p => r[p]).filter(Boolean);
-  if (vals.length <= 1) return 'none';
-  const uniq = [...new Set(vals)];
-  return uniq.length === 1 ? 'ok' : 'conflict';
+  return vals.length <= 1 ? 'none' : 'ok';
 }
 function isDup(r) {
-  return ['mob','ext','web'].some(p => r[p] && iconMap[r[p]] && iconMap[r[p]].size > 1);
+  return ['mob','ext','web'].some(p => r[p] && iconMap[r[p]] && iconMap[r[p]].length > 1);
 }
-function iconFor(r) {
-  return r.mob || r.ext || r.web;
-}
+function iconFor(r) { return r.mob || r.ext || r.web; }
 
-// enrich
-const enriched = DATA.map(r => ({ ...r, status: getStatus(r), dup: isDup(r) }));
+const enriched = DATA.map(r => ({...r, status: getStatus(r), dup: isDup(r)}));
+const allSections = [...new Set(DATA.flatMap(d => d.s))].sort();
 
-// sections
-const sections = [...new Set(DATA.map(d => d.s))];
-const sel = document.getElementById('sectionFilter');
-sections.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+// ── INIT ──────────────────────────────────────────────────────────────────────
+const secSel = document.getElementById('secFilter');
+allSections.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; secSel.appendChild(o); });
 
-let currentFilter = 'all';
-let currentTab = 'table';
+let filter = 'all', tab = 'table';
+
+const statDefs = [
+  {id:'all',   label:'Total',         cls:'c-yellow', f:'all'},
+  {id:'ok',    label:'Consistent',    cls:'c-green',  f:'ok'},
+  {id:'conf',  label:'Conflicts',     cls:'c-red',    f:'conflicts'},
+  {id:'dup',   label:'Duplicates',    cls:'c-orange', f:'dup'},
+  {id:'icons', label:'Unique icons',  cls:'c-blue',   f:null, t:'iconindex'},
+];
+const statsBar = document.getElementById('statsBar');
+statDefs.forEach(s => {
+  const el = Object.assign(document.createElement('div'), {className:`stat ${s.cls}`, id:`stat-${s.id}`});
+  el.innerHTML = `<div class="n" id="n-${s.id}">—</div><div class="l">${s.label}</div>`;
+  el.onclick = () => s.t ? setTab(s.t) : setFilter(s.f);
+  statsBar.appendChild(el);
+});
+
+const filterDefs = [{l:'All',f:'all'},{l:'⚡ Conflicts',f:'conflicts'},{l:'✅ Consistent',f:'ok'},{l:'⚠️ Duplicates',f:'dup'}];
+const filterBtns = document.getElementById('filterBtns');
+filterDefs.forEach((fd,i) => {
+  const b = Object.assign(document.createElement('button'), {className:'fbtn'+(i===0?' active':''), textContent:fd.l});
+  b.onclick = () => setFilter(fd.f);
+  filterBtns.appendChild(b);
+});
+
+const tabDefs = [
+  {id:'table',     l:'📋 Table'},
+  {id:'gallery',   l:'🖼 Gallery'},
+  {id:'iconindex', l:'🔢 Icon Index'},
+  {id:'duplicates',l:'⚠️ Same icon, diff action'},
+];
+const tabBar = document.getElementById('tabBar');
+tabDefs.forEach(td => {
+  const b = Object.assign(document.createElement('button'), {className:'tab'+(td.id==='table'?' active':''), textContent:td.l});
+  b.onclick = () => setTab(td.id);
+  tabBar.appendChild(b);
+});
 
 function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.stat').forEach(b => b.classList.remove('active'));
-  const map = {all:'stat-all',ok:'stat-ok',conflicts:'stat-conflict',dup:'stat-dup'};
-  if (map[f]) document.getElementById(map[f]).classList.add('active');
-  // update fbtn
-  const idx = {all:0,conflicts:1,ok:2,dup:3}[f];
-  if (idx !== undefined) document.querySelectorAll('.fbtn')[idx]?.classList.add('active');
+  filter = f;
+  filterDefs.forEach((fd,i) => filterBtns.children[i].classList.toggle('active', fd.f===f));
+  statDefs.forEach(s => document.getElementById(`stat-${s.id}`)?.classList.remove('active'));
+  const m = {all:'stat-all',ok:'stat-ok',conflicts:'stat-conf',dup:'stat-dup'};
+  if (m[f]) document.getElementById(m[f])?.classList.add('active');
   render();
 }
 function setTab(t) {
-  currentTab = t;
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab')[['table','gallery','duplicates'].indexOf(t)]?.classList.add('active');
+  tab = t;
+  tabDefs.forEach((td,i) => tabBar.children[i].classList.toggle('active', td.id===t));
+  document.getElementById('controls').style.display = t==='iconindex' ? 'none' : 'flex';
+  if (t==='iconindex') document.getElementById('stat-icons').classList.add('active');
+  else document.getElementById('stat-icons').classList.remove('active');
   render();
 }
 
+// ── FILTER ────────────────────────────────────────────────────────────────────
 function filtered() {
   const q = document.getElementById('search').value.toLowerCase();
-  const sec = document.getElementById('sectionFilter').value;
+  const sec = document.getElementById('secFilter').value;
   return enriched.filter(r => {
-    if (sec && r.s !== sec) return false;
+    if (sec && !r.s.includes(sec)) return false;
     if (q && !r.l.toLowerCase().includes(q) && !['mob','ext','web'].some(p => r[p]?.includes(q))) return false;
-    if (currentFilter === 'ok') return r.status === 'ok';
-    if (currentFilter === 'conflicts') return r.status === 'conflict';
-    if (currentFilter === 'dup') return r.dup;
+    if (filter==='ok') return r.status==='ok';
+    if (filter==='conflicts') return r.status==='conflict';
+    if (filter==='dup') return r.dup;
     return true;
   });
 }
 
-function iconCell(name, rowStatus, rowDup) {
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+function icell(name, st, dp) {
   if (!name) return '<span class="dash">—</span>';
-  const cls = rowStatus === 'conflict' ? 'conflict-icon' : (rowDup ? 'dup-icon' : '');
-  return `<div class="icon-cell">
-    <img class="icon-preview" src="${PNG(name)}" onerror="this.style.display='none'" loading="lazy">
-    <span class="icon-name ${cls}">${name}</span>
-  </div>`;
+  const cls = st==='conflict'?'ci':(dp?'di':'');
+  return `<div class="icell"><img class="iprev" src="${PNG(name)}" onerror="this.style.display='none'" loading="lazy"><span class="iname ${cls}" title="${name}">${name}</span></div>`;
 }
-
-function badgeHtml(r) {
-  if (r.status === 'conflict') return '<span class="badge conflict">⚡ Conflict</span>';
-  if (r.status === 'ok') return '<span class="badge ok">✅ OK</span>';
+function badge(r) {
+  if (r.status==='conflict') return '<span class="badge conflict">⚡ Conflict</span>';
+  if (r.status==='ok') return '<span class="badge ok">✅ OK</span>';
   if (r.dup) return '<span class="badge dup">⚠️ Duplicate</span>';
   return '<span class="badge none">—</span>';
 }
+function secTags(arr) { return arr.map(s=>`<span class="sec-tag">${s}</span>`).join(''); }
 
+function sugBox(uses) {
+  // build suggestion rows for this group of uses
+  const rows = uses.map(u => {
+    const s = SUGS[u.label];
+    if (!s) return null;
+    if (s.keep) return { label: u.label, keep: true, keepNote: s.keepNote, note: s.note };
+    return { label: u.label, sugIcon: s.icon, note: s.note };
+  }).filter(Boolean);
+
+  if (!rows.length) return '';
+
+  const keepRows = rows.filter(r => r.keep);
+  const changeRows = rows.filter(r => !r.keep);
+
+  return `<div class="ii-sug">
+    <div class="ii-sug-title">💡 Suggested fix</div>
+    <div class="ii-sug-rows">
+      ${keepRows.map(r => `<div class="ii-sug-row">
+        <span class="ii-sug-action">${r.label}</span>
+        <span class="ii-sug-keep">${r.keepNote}</span>
+      </div>`).join('')}
+      ${changeRows.map(r => `<div class="ii-sug-row">
+        <span class="ii-sug-action">${r.label}</span>
+        <span class="ii-sug-arrow">→</span>
+        <span class="ii-sug-new"><img src="${PNG(r.sugIcon)}" onerror="this.style.display='none'" loading="lazy"><span>${r.sugIcon}</span></span>
+      </div>
+      ${r.note ? `<div class="ii-sug-note" style="margin-left:0;padding-left:0;color:var(--text3)">${r.note}</div>` : ''}`).join('')}
+    </div>
+  </div>`;
+}
+
+// ── TABLE ─────────────────────────────────────────────────────────────────────
 function renderTable(rows) {
-  if (!rows.length) return '<div class="empty">No results for this filter.</div>';
+  if (!rows.length) return '<div class="empty">No results.</div>';
   return `<div class="table-wrap"><table>
     <thead><tr>
-      <th>Section</th><th>Action / Label</th>
+      <th>Action / Label</th><th>Sections</th>
       <th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th>
       <th>Status</th>
     </tr></thead>
-    <tbody>${rows.map(r => `<tr class="${r.status === 'conflict' ? 'conflict' : (r.dup ? 'dup' : '')}">
-      <td class="section">${r.s}</td>
-      <td class="label">${r.l}</td>
-      <td>${iconCell(r.mob, r.status, r.dup)}</td>
-      <td>${iconCell(r.ext, r.status, r.dup)}</td>
-      <td>${iconCell(r.web, r.status, r.dup)}</td>
-      <td>${badgeHtml(r)}</td>
+    <tbody>${rows.map(r=>`<tr class="${r.status==='conflict'?'conflict':(r.dup?'dup':'')}">
+      <td class="lbl">${r.l}</td>
+      <td class="seccell">${secTags(r.s)}</td>
+      <td>${icell(r.mob,r.status,r.dup)}</td>
+      <td>${icell(r.ext,r.status,r.dup)}</td>
+      <td>${icell(r.web,r.status,r.dup)}</td>
+      <td>${badge(r)}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
 }
 
+// ── GALLERY ───────────────────────────────────────────────────────────────────
 function renderGallery(rows) {
-  if (!rows.length) return '<div class="empty">No results for this filter.</div>';
-  return `<div class="gallery">${rows.map(r => {
+  if (!rows.length) return '<div class="empty">No results.</div>';
+  return `<div class="gallery">${rows.map(r=>{
     const ic = iconFor(r);
-    const cls = r.status === 'conflict' ? 'conflict' : (r.dup ? 'dup' : '');
-    return `<div class="card ${cls}">
-      <div class="card-img">${ic
-        ? `<img src="${PNG(ic)}" onerror="this.style.display='none'" loading="lazy">`
-        : '<span class="no-icon">no icon</span>'}</div>
+    return `<div class="card ${r.status==='conflict'?'conflict':(r.dup?'dup':'')}">
+      <div class="card-img">${ic?`<img src="${PNG(ic)}" onerror="this.style.display='none'" loading="lazy">`:'<span style="color:var(--text3);font-size:10px">no icon</span>'}</div>
       <div class="card-body">
-        <div class="card-label">${r.l}</div>
-        <div class="card-section">${r.s}</div>
-        <div class="card-status">${badgeHtml(r)}</div>
+        <div class="card-lbl">${r.l}</div>
+        <div class="card-sec">${r.s.join(', ')}</div>
+        <div class="card-status">${badge(r)}</div>
       </div>
     </div>`;
   }).join('')}</div>`;
 }
 
+// ── DUPLICATES TAB ────────────────────────────────────────────────────────────
 function renderDuplicates() {
   const q = document.getElementById('search').value.toLowerCase();
-  const dupIcons = Object.entries(iconMap)
-    .filter(([k, v]) => v.size > 1)
-    .filter(([k]) => !q || k.includes(q));
-  if (!dupIcons.length) return '<div class="empty">No duplicate icons found.</div>';
-  return `<div class="dup-panel">${dupIcons.map(([icon, labels]) => `
+  const dups = Object.entries(iconMap).filter(([k,v])=>v.length>1&&(!q||k.includes(q)));
+  if (!dups.length) return '<div class="empty">No duplicates.</div>';
+  return `<div class="dup-panel">${dups.map(([icon,uses])=>`
     <div class="dup-card">
-      <div class="dup-icon-name">
-        <img src="${PNG(icon)}" onerror="this.style.display='none'" loading="lazy">
-        <span>${icon}</span>
-        <span class="dup-count">used for ${labels.size} different actions</span>
+      <div class="ii-header">
+        <div class="ii-img"><img src="${PNG(icon)}" onerror="this.style.display='none'" loading="lazy"></div>
+        <div><div class="ii-name">${icon}</div><div class="ii-count">Used for ${uses.length} different actions</div></div>
+        <span class="ii-badge-dup" style="margin-left:auto">⚠️ Duplicate</span>
       </div>
-      <div class="dup-labels">${[...labels].map(l => `<span class="dup-label">${l}</span>`).join('')}</div>
+      <div class="ii-actions-wrap">${uses.map(u=>`<div class="ii-action-row">
+        <div class="ii-action-lbl">${u.label}</div>
+        <div class="ii-action-sec">${u.sections.join(', ')}</div>
+      </div>`).join('')}</div>
+      ${sugBox(uses)}
     </div>`).join('')}</div>`;
 }
 
+// ── ICON INDEX ────────────────────────────────────────────────────────────────
+function renderIconIndex() {
+  const all = Object.entries(iconMap).sort((a,b)=>{
+    const aP=a[1].length>1, bP=b[1].length>1;
+    if (aP!==bP) return bP-aP;
+    return a[0].localeCompare(b[0]);
+  });
+  const prob = all.filter(([,v])=>v.length>1);
+
+  return `
+    <div class="ii-topstats">
+      <div class="ii-topstat"><div class="n" style="color:var(--blue)">${all.length}</div><div class="l">Unique icons in use</div></div>
+      <div class="ii-topstat"><div class="n" style="color:var(--green)">${all.length-prob.length}</div><div class="l">Used for 1 action ✓</div></div>
+      <div class="ii-topstat"><div class="n" style="color:var(--orange)">${prob.length}</div><div class="l">Used for 2+ actions ⚠️</div></div>
+    </div>
+    <div class="ii-grid">
+    ${all.map(([icon,uses])=>{
+      const isP = uses.length>1;
+      return `<div class="ii-card ${isP?'problem':'clean'}">
+        <div class="ii-header">
+          <div class="ii-img"><img src="${PNG(icon)}" onerror="this.style.display='none'" loading="lazy"></div>
+          <div style="flex:1;min-width:0">
+            <div class="ii-name" style="font-size:12px">${icon}</div>
+            <div class="ii-count">${uses.length} action${uses.length>1?'s':''}</div>
+          </div>
+          ${isP?`<span class="ii-badge-dup">⚠️</span>`:`<span class="ii-badge-ok">✓</span>`}
+        </div>
+        <div class="ii-actions-wrap">
+          ${uses.map(u=>`<div class="ii-action-row">
+            <div class="ii-action-lbl">${u.label}</div>
+            <div class="ii-action-sec">${u.sections.join(', ')}</div>
+          </div>`).join('')}
+        </div>
+        ${isP ? sugBox(uses) : ''}
+      </div>`;
+    }).join('')}
+    </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function render() {
   const rows = filtered();
-  // stats
-  document.getElementById('n-all').textContent = enriched.length;
-  document.getElementById('n-ok').textContent = enriched.filter(r => r.status === 'ok').length;
-  document.getElementById('n-conflict').textContent = enriched.filter(r => r.status === 'conflict').length;
-  document.getElementById('n-dup').textContent = enriched.filter(r => r.dup).length;
-  document.getElementById('countInfo').textContent = currentTab !== 'duplicates'
-    ? `Showing ${rows.length} of ${enriched.length} actions`
-    : '';
+  document.getElementById('n-all').textContent   = enriched.length;
+  document.getElementById('n-ok').textContent    = enriched.filter(r=>r.status==='ok').length;
+  document.getElementById('n-conf').textContent  = enriched.filter(r=>r.status==='conflict').length;
+  document.getElementById('n-dup').textContent   = enriched.filter(r=>r.dup).length;
+  document.getElementById('n-icons').textContent = Object.keys(iconMap).length;
+
+  document.getElementById('countInfo').textContent =
+    ['table','gallery','duplicates'].includes(tab) ? `Showing ${rows.length} of ${enriched.length} actions` : '';
 
   const v = document.getElementById('view');
-  if (currentTab === 'table') v.innerHTML = renderTable(rows);
-  else if (currentTab === 'gallery') v.innerHTML = renderGallery(rows);
-  else v.innerHTML = renderDuplicates();
+  if      (tab==='table')      v.innerHTML = renderTable(rows);
+  else if (tab==='gallery')    v.innerHTML = renderGallery(rows);
+  else if (tab==='duplicates') v.innerHTML = renderDuplicates();
+  else if (tab==='iconindex')  v.innerHTML = renderIconIndex();
 }
 
 render();
