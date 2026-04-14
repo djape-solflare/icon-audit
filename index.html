@@ -72,6 +72,7 @@ tbody tr.dup:hover { background: rgba(255,147,64,0.14); }
 td { padding: 9px 14px; vertical-align: middle; }
 td.lbl { font-weight: 500; color: var(--text); white-space: nowrap; }
 td.seccell { font-size: 11px; }
+td.statuscel { white-space: nowrap; }
 
 .sec-tag { font-family: var(--mono); background: var(--bg3); border-radius: 3px; color: var(--text3); display: inline-block; font-size: 10px; margin: 1px 2px 1px 0; padding: 1px 5px; white-space: nowrap; }
 
@@ -97,6 +98,7 @@ td.seccell { font-size: 11px; }
 .badge.conflict { background: var(--red-bg); color: var(--red); }
 .badge.dup      { background: var(--orange-bg); color: var(--orange); }
 .badge.none     { color: var(--text3); }
+.badge-primary { background: rgba(255,239,70,0.15); border: 1px solid rgba(255,239,70,0.35); border-radius: 4px; color: var(--yellow); display: inline-block; font-size: 10px; font-weight: 600; margin-left: 4px; padding: 2px 5px; white-space: nowrap; vertical-align: middle; line-height: 1; }
 
 /* ── GALLERY ── */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 10px; }
@@ -212,7 +214,7 @@ const DATA = [
   {l:'Show balance',              mob:'visibility',        ext:'visibility',        web:'visibility',        s:['Hero Card']},
   {l:'Three dots',                mob:'more_vert',         ext:'more_vert',         web:null,                s:['Hero Card','STP']},
   {l:'Settings',                  mob:'settings',          ext:'settings',          web:'settings',          s:['Hero Card','Nav','Swap']},
-  {l:'Deposit',                   mob:'arrow_downward',    ext:'add',               web:'add',               s:['Hero Card','Portfolio','STP']},
+  {l:'Deposit',                   mob:'add',               ext:'add',               web:'add',               s:['Hero Card','Portfolio','STP']},
   {l:'Buy with card or bank',     mob:null,                ext:'attach_money',      web:'attach_money',      s:['Hero Card']},
   {l:'Receive crypto / Scan QR',  mob:'qr_code',           ext:'qr_code',           web:'qr_code',           s:['Hero Card']},
   {l:'Rename wallet',             mob:'edit',              ext:null,                web:null,                s:['Hero Card']},
@@ -254,9 +256,10 @@ const DATA = [
   {l:'Manage apps',               mob:'link_alt',          ext:'link_alt',          web:null,                s:['Settings']},
   {l:'Spending approvals',        mob:'link',              ext:'link',              web:null,                s:['Settings']},
   {l:'Biometrics',                mob:'fingerprint',       ext:null,                web:null,                s:['Settings']},
-  {l:'Auto lock',                 mob:null,                ext:'timer',             web:null,                s:['Settings']},
-  {l:'Change passcode / Lock',    mob:'lock',              ext:'lock',              web:null,                s:['Settings']},
-  {l:'Request password',          mob:null,                ext:'key',               web:null,                s:['Settings']},
+  {l:'Request authentication / Auto lock', mob:'fingerprint', ext:'timer',           web:null,                s:['Settings']},
+  {l:'Change passcode',           mob:'lock',              ext:null,                web:null,                s:['Settings']},
+  {l:'Change password',           mob:null,                ext:'key',               web:'key',               s:['Settings']},
+  {l:'Lock now',                  mob:null,                ext:'lock',              web:'lock',              s:['Settings']},
   {l:'Terms of service',          mob:'docs',              ext:'docs',              web:null,                s:['Settings']},
   {l:'Log out',                   mob:'logout',            ext:'logout',            web:null,                s:['Settings']},
   {l:'Support',                   mob:'live_help',         ext:'live_help',         web:null,                s:['Settings']},
@@ -276,9 +279,29 @@ const DATA = [
   {l:'Liquidity',                 mob:'swap_horiz',        ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Starting soon',             mob:'calendar_today',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Closing soon',              mob:'calendar_month',    ext:null,                web:null,                s:['Prediction Markets']},
+  // Market page filters
+  {l:'Gainers',                   mob:'trending_up',       ext:'trending_up',       web:'trending_up',       s:['Market']},
+  {l:'Losers',                    mob:'trending_down',     ext:'trending_down',     web:'trending_down',     s:['Market']},
+  {l:'Market cap',                mob:'paid',              ext:'paid',              web:'paid',              s:['Market']},
+  {l:'Volume (market)',           mob:'sync',              ext:'sync',              web:'sync',              s:['Market']},
+  {l:'Liquidity (market)',        mob:'swap_horiz',        ext:'swap_horiz',        web:'swap_horiz',        s:['Market']},
+  {l:'Holders',                   mob:'group',             ext:'group',             web:'group',             s:['Market']},
+  {l:'Last added',                mob:'history',           ext:'history',           web:'history',           s:['Market']},
+  // Delta change (price / holders 24h etc)
+  {l:'Delta change up',           mob:'north_east',        ext:'north_east',        web:'north_east',        s:['Market','STP','Portfolio']},
+  {l:'Delta change down',         mob:'south_east',        ext:'south_east',        web:'south_east',        s:['Market','STP','Portfolio']},
 ];
 
 const SUGS = {
+  'Gainers':                     { icon:'trending_up',  keep:true, keepNote:'trending_up stays for Gainers' },
+  'Losers':                      { icon:'trending_down', keep:true, keepNote:'trending_down is distinct — unique to Losers' },
+  'Market cap':                  { icon:'paid', keep:true, keepNote:'paid stays for Market cap' },
+  'Volume (market)':             { icon:'sync', keep:true, keepNote:'sync stays for Volume (market)' },
+  'Liquidity (market)':          { icon:'swap_horiz', note:'swap_horiz also used for Swap/Trade nav — consider water_drop', icon:'water_drop' },
+  'Holders':                     { icon:'group', keep:true, keepNote:'group stays for Holders — unique usage' },
+  'Last added':                  { icon:'history', note:'history also used for Activity nav — consider schedule or more_time', icon:'schedule' },
+  'Delta change up':             { icon:'north_east', keep:true, keepNote:'north_east stays for delta up' },
+  'Delta change down':           { icon:'south_east', keep:true, keepNote:'south_east stays for delta down' },
   'Stocks placeholder':          { icon:'candlestick_chart', note:'More specific to financial data visualization' },
   'Volume':                      { icon:'equalizer',         note:'Suggests quantity/magnitude, not market chart' },
   'Liquidity':                   { icon:'water_drop',        note:'Liquid assets metaphor, distinct from swap' },
@@ -309,14 +332,55 @@ DATA.forEach(r => {
 });
 
 // ── STATUS ────────────────────────────────────────────────────────────────────
+// Conflict  = different icons across platforms for the same action
+// Duplicate = same icon used for multiple different actions (regardless of platform)
+// OK        = icon is unique to this action AND consistent across all platforms where it appears
+// none      = only on one platform, nothing to compare
 function getStatus(r) {
-  for (const [a,b] of [['mob','ext'],['mob','web'],['ext','web']])
-    if (r[a]&&r[b]&&r[a]!==r[b]) return 'conflict';
-  return ['mob','ext','web'].map(p=>r[p]).filter(Boolean).length<=1 ? 'none' : 'ok';
+  // Check conflict first: different icon values across platforms (where defined)
+  const pairs = [['mob','ext'],['mob','web'],['ext','web']];
+  for (const [a,b] of pairs)
+    if (r[a] && r[b] && r[a] !== r[b]) return 'conflict';
+  // Check duplicate: is any of this row's icons shared with another action?
+  const icons = [...new Set([r.mob,r.ext,r.web].filter(Boolean))];
+  if (icons.some(ic => iconMap[ic] && iconMap[ic].length > 1)) return 'dup';
+  // Only one platform? — not comparable
+  const present = [r.mob,r.ext,r.web].filter(Boolean);
+  if (present.length <= 1) return 'none';
+  // Consistent + unique = OK
+  return 'ok';
 }
-function isDup(r) { return ['mob','ext','web'].some(p=>r[p]&&iconMap[r[p]]&&iconMap[r[p]].length>1); }
+// Separate from status — dup flag purely for icon-sharing detection
+function isDup(r) {
+  return ['mob','ext','web'].some(p => r[p] && iconMap[r[p]] && iconMap[r[p]].length > 1);
+}
+
+// Which action is "primary" for a given icon?
+// Primary = the one listed first in SUGS as keep:true, or first action alphabetically
+const primaryForIcon = {};
+Object.entries(SUGS).forEach(([label, s]) => {
+  if (s.keep) {
+    // find which icon this label uses
+    const row = DATA.find(r => r.l === label);
+    if (row) {
+      const ic = row.mob || row.ext || row.web;
+      if (ic && !primaryForIcon[ic]) primaryForIcon[ic] = label;
+    }
+  }
+});
+// For icons without explicit SUGS keep, assign first action as primary
+Object.entries(iconMap).forEach(([ic, uses]) => {
+  if (uses.length > 1 && !primaryForIcon[ic])
+    primaryForIcon[ic] = uses[0].label;
+});
 function iconFor(r) { return r.mob||r.ext||r.web; }
-const enriched = DATA.map(r=>({...r,status:getStatus(r),dup:isDup(r)}));
+const enriched = DATA.map(r => {
+  const status = getStatus(r);
+  const dup = isDup(r);
+  const ic = r.mob || r.ext || r.web;
+  const isPrimary = dup && ic && primaryForIcon[ic] === r.l;
+  return {...r, status, dup, isPrimary};
+});
 const allSecs = [...new Set(DATA.flatMap(d=>d.s))].sort();
 
 // ── ICON GLYPH HELPER ─────────────────────────────────────────────────────────
@@ -335,7 +399,10 @@ function ipill(name, st, dp) {
 function badge(r) {
   if (r.status==='conflict') return '<span class="badge conflict">⚡ Conflict</span>';
   if (r.status==='ok')       return '<span class="badge ok">✅ OK</span>';
-  if (r.dup)                 return '<span class="badge dup">⚠️ Duplicate</span>';
+  if (r.dup) {
+    const star = r.isPrimary ? '<span class="badge-primary" title="Primary usage — keep this icon here">⭐</span>' : '';
+    return `<span class="badge dup">⚠️ Duplicate</span>${star}`;
+  }
   return '<span class="badge none">—</span>';
 }
 function secTags(arr) { return arr.map(s=>`<span class="sec-tag">${s}</span>`).join(''); }
@@ -470,7 +537,7 @@ function renderTable(rows) {
       <td>${ipill(r.mob,r.status,r.dup)}</td>
       <td>${ipill(r.ext,r.status,r.dup)}</td>
       <td>${ipill(r.web,r.status,r.dup)}</td>
-      <td>${badge(r)}</td>
+      <td class="statuscel">${badge(r)}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
 }
