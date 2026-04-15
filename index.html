@@ -153,9 +153,9 @@ td.statuscel { white-space: nowrap; }
 .badge-primary::after {
   content: attr(data-tip);
   position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  right: calc(100% + 10px);
+  transform: translateY(-50%);
   background: var(--bg3);
   border: 1px solid var(--yellow-border);
   border-radius: 5px;
@@ -169,7 +169,22 @@ td.statuscel { white-space: nowrap; }
   transition: opacity .15s;
   z-index: 100;
 }
-.badge-primary:hover::after { opacity: 1; }
+/* arrow pointing right toward the star */
+.badge-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 4px);
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: var(--yellow-border);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 101;
+}
+.badge-primary:hover::after,
+.badge-primary:hover::before { opacity: 1; }
 
 /* ── GALLERY ── */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 10px; }
@@ -305,8 +320,8 @@ const DATA = [
   {l:'Collections',               mob:null,                ext:null,                web:'grid_view',         s:['Nav']},
   {l:'Swap page (toggle)',        mob:'swap_vert',         ext:'swap_vert',         web:'swap_vert',         s:['Swap']},
   {l:'Back',                      mob:'arrow_back',        ext:'arrow_back',        web:null,                s:['STP']},
-  {l:'Add to watchlist',          mob:'star',              ext:null,                web:null,                s:['STP']},
-  {l:'Remove from watchlist',     mob:'star',              ext:null,                web:null,                s:['STP']},
+  {l:'Add to watchlist',          mob:'star',              ext:null,                web:null,                s:['STP'], nodup:true},
+  {l:'Remove from watchlist',     mob:'star',              ext:null,                web:null,                s:['STP'], nodup:true},
   {l:'Share token',               mob:null,                ext:'upload',            web:null,                s:['STP']},
   {l:'View on explorer',          mob:'open_in_new',       ext:'open_in_new',       web:'open_in_new',       s:['STP','Collectibles']},
   {l:'Pin to top',                mob:'keep',              ext:'keep',              web:null,                s:['STP']},
@@ -380,7 +395,7 @@ const SUGS = {
   'Grid view':                   { icon:'grid_on',           note:'Collections nav uses grid_view — grid_on is distinct for the toggle' },
   'Customize / Edit background': { icon:'brush', keep:true,  keepNote:'brush stays for Customize; use palette for Edit background' },
   'Add to watchlist':            { icon:'star', keep:true,   keepNote:'Filled star ★' },
-  'Remove from watchlist':       { icon:'star', keep:true,   keepNote:'Outlined star ☆ (star_border variant)', note:'Same icon name, different fill variant' },
+  'Remove from watchlist':       { icon:'star', keep:true, keepNote:'star outlined (FILL=0) — intentional fill variant of Add to watchlist' },
   'Limit order':                 { icon:'price_change',      note:'Suggests price threshold/target more clearly' },
   'Request password':            { icon:'password',          note:'More specific than key for password entry' },
   'Change passcode / Lock':      { icon:'lock', keep:true,   keepNote:'lock stays as primary auth action' },
@@ -410,6 +425,7 @@ function getStatus(r) {
   return 'ok';
 }
 function isDup(r) {
+  if (r.nodup) return false;
   return ['mob','ext','web'].some(p => r[p] && iconMap[r[p]] && iconMap[r[p]].length > 1);
 }
 
