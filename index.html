@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Icon System Audit</title>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,1,0&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root {
@@ -307,11 +307,11 @@ tbody tr.res-changed:hover { background: rgba(76,175,80,0.11); }
 <script>
 // ── DATA ────────────────────────────────────────────────────────────────────
 const DATA = [
-  {l:'Copy',                      mob:'content_copy',      ext:'content_copy',      web:'content_copy',      s:['Hero Card']},
+  {l:'Copy',                      mob:'content_copy',      ext:'content_copy',      web:'content_copy',      s:['Hero Card'], fill:false},
   {l:'Card / Wallet',             mob:'credit_card',       ext:null,                web:null,                s:['Hero Card']},
   {l:'Expand view',               mob:null,                ext:'expand_content',    web:null,                s:['Hero Card']},
   {l:'Sidebar',                   mob:null,                ext:'last_page',         web:null,                s:['Hero Card']},
-  {l:'Popup',                     mob:null,                ext:'float_landscape_2', web:null,                s:['Hero Card']},
+  {l:'Popup',                     mob:null,                ext:'float_landscape_2', web:null,                s:['Hero Card'], fill:false},
   {l:'Customize / Edit background',mob:'brush',            ext:'brush',             web:'brush',             s:['Hero Card']},
   {l:'Hide balance',              mob:'visibility_off',    ext:'visibility_off',    web:'visibility_off',    s:['Hero Card']},
   {l:'Show balance',              mob:'visibility',        ext:'visibility',        web:'visibility',        s:['Hero Card']},
@@ -377,16 +377,16 @@ const DATA = [
   {l:'Search',                    mob:'search',            ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Trending',                  mob:'whatshot',          ext:null,                web:null,                s:['Prediction Markets']},
   {l:'New',                       mob:'auto_awesome',      ext:null,                web:null,                s:['Prediction Markets']},
-  {l:'Volume',                    mob:'area_chart',        ext:null,                web:null,                s:['Prediction Markets']},
+  {l:'Volume',                    mob:'area_chart',        ext:null,                web:null,                s:['Prediction Markets'], fill:false},
   {l:'Starting soon',             mob:'calendar_today',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Closing soon',              mob:'calendar_month',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Gainers',                   mob:'trending_up',       ext:'trending_up',       web:'trending_up',       s:['Market']},
   {l:'Losers',                    mob:'trending_down',     ext:'trending_down',     web:'trending_down',     s:['Market']},
   {l:'Market cap',                mob:'paid',              ext:'paid',              web:'paid',              s:['Market']},
   {l:'Volume (market)',           mob:'sync',              ext:'sync',              web:'sync',              s:['Market']},
-  {l:'Liquidity',                 mob:'swap_horiz',        ext:'swap_horiz',        web:'swap_horiz',        s:['Market','Prediction Markets']},
+  {l:'Liquidity',                 mob:'swap_horiz',        ext:'swap_horiz',        web:'swap_horiz',        s:['Market','Prediction Markets'], fill:false},
   {l:'Holders',                   mob:'group',             ext:'group',             web:'group',             s:['Market']},
-  {l:'Last added',                mob:'history',           ext:'history',           web:'history',           s:['Market']},
+  {l:'Last added',                mob:'history',           ext:'history',           web:'history',           s:['Market'], fill:false},
   {l:'Delta change up',           mob:'north_east',        ext:'north_east',        web:'north_east',        s:['Market','STP','Portfolio']},
   {l:'Delta change down',         mob:'south_east',        ext:'south_east',        web:'south_east',        s:['Market','STP','Portfolio']},
 ];
@@ -475,15 +475,16 @@ const enriched = DATA.map(r => {
 const allSecs = [...new Set(DATA.flatMap(d=>d.s))].sort();
 
 // ── ICON GLYPH HELPER ─────────────────────────────────────────────────────────
-function ig(name, extraCls='') {
-  return `<span class="ig${extraCls?' '+extraCls:''}">${name}</span>`;
+function ig(name, extraCls='', fill=true) {
+  const fv = fill ? "'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24" : "'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24";
+  return `<span class="ig${extraCls?' '+extraCls:''}" style="font-variation-settings:${fv}">${name}</span>`;
 }
 
 // In the table, icons always use var(--text) — no ci/di class passed
-function ipill(name, st, dp) {
+function ipill(name, st, dp, fill=true) {
   if (!name) return '<span class="dash">—</span>';
   const tc = st==='conflict'?'ci':(dp?'di':'');
-  return `<div class="ipill">${ig(name)}<span class="itag ${tc}" title="${name}" onclick="searchIcon('${name}')">${name}</span></div>`;
+  return `<div class="ipill">${ig(name,'',fill)}<span class="itag ${tc}" title="${name}" onclick="searchIcon('${name}')">${name}</span></div>`;
 }
 
 function badge(r) {
@@ -612,10 +613,10 @@ function renderTable(rows) {
     <tbody>${rows.map(r=>`<tr class="${r.status==='conflict'?'conflict':(r.dup?'dup':'')}">
       <td class="lbl">${r.l}</td>
       <td class="seccell">${secTags(r.s)}</td>
-      <td>${ipill(r.mob,r.status,r.dup)}</td>
-      <td>${ipill(r.ext,r.status,r.dup)}</td>
-      <td>${ipill(r.web,r.status,r.dup)}</td>
-      <td>${r.fill===false ? '<span class="badge" style="background:var(--bg3);color:var(--text3)">false</span>' : '<span class="badge ok" style="background:rgba(127,159,246,0.12);color:var(--blue)">true</span>'}</td>
+      <td>${ipill(r.mob,r.status,r.dup,r.fill!==false)}</td>
+      <td>${ipill(r.ext,r.status,r.dup,r.fill!==false)}</td>
+      <td>${ipill(r.web,r.status,r.dup,r.fill!==false)}</td>
+      <td>${r.fill===false ? '<span class="badge" style="background:rgba(179,136,255,0.12);color:#b388ff;border:1px solid rgba(179,136,255,0.25)">false</span>' : '<span class="badge ok" style="background:rgba(127,159,246,0.12);color:var(--blue)">true</span>'}</td>
       <td class="statuscel">${badge(r)}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
@@ -627,7 +628,7 @@ function renderGallery(rows) {
     const ic=iconFor(r);
     const gc=r.status==='conflict'?'ci':(r.dup?'di':'');
     return `<div class="gcard ${r.status==='conflict'?'conflict':(r.dup?'dup':'')}">
-      <div class="gcard-preview">${ic?ig(ic,gc):'<span style="color:var(--text3);font-size:11px">—</span>'}</div>
+      <div class="gcard-preview">${ic?ig(ic,gc,r.fill!==false):'<span style="color:var(--text3);font-size:11px">—</span>'}</div>
       <div class="gcard-body">
         <div class="gcard-icon">${ic||''}</div>
         <div class="gcard-lbl">${r.l}</div>
@@ -720,14 +721,14 @@ function renderResolution() {
   </div>`;
 
   const tableHtml = `<div class="table-wrap"><table>
-    <thead><tr><th>Action / Label</th><th>Sections</th><th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th><th>Change</th></tr></thead>
+    <thead><tr><th>Action / Label</th><th>Sections</th><th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th><th>Fill</th><th>Change</th></tr></thead>
     <tbody>${rows.map(r => {
       const orig = enriched.find(e => e.l === r.l);
       const rowCls = r.changed ? 'res-changed' : '';
       function rpill(newIc, origIc) {
         if (!newIc) return '<span class="dash">—</span>';
         const didChange = newIc !== origIc;
-        return `<div class="ipill">${ig(newIc)}
+        return `<div class="ipill">${ig(newIc,'',r.fill!==false)}
           <span class="itag${didChange?' res-new':''}" title="${newIc}">${newIc}</span>
           ${didChange && origIc ? `<span class="res-was" title="was: ${origIc}">${origIc}</span>` : ''}
         </div>`;
@@ -735,12 +736,14 @@ function renderResolution() {
       const changeCell = r.changed
         ? `<span class="badge ok">✅ Fixed</span>`
         : (orig && orig.status === 'conflict' ? `<span class="badge conflict">⚡ Needs fix</span>` : `<span class="badge none">—</span>`);
+      const fillCell = r.fill===false ? '<span class="badge" style="background:rgba(179,136,255,0.12);color:#b388ff;border:1px solid rgba(179,136,255,0.25)">false</span>' : '<span class="badge ok" style="background:rgba(127,159,246,0.12);color:var(--blue)">true</span>';
       return `<tr class="${rowCls}">
         <td class="lbl">${r.l}</td>
         <td class="seccell">${secTags(r.s)}</td>
         <td>${rpill(r.mob, orig?.mob)}</td>
         <td>${rpill(r.ext, orig?.ext)}</td>
         <td>${rpill(r.web, orig?.web)}</td>
+        <td class="statuscel">${fillCell}</td>
         <td class="statuscel">${changeCell}</td>
       </tr>`;
     }).join('')}</tbody>
