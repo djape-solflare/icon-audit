@@ -22,8 +22,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 13px; min-height: 100vh; }
 
+.inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px; }
+
 /* ── HEADER ── */
-header { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+header { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 14px 0; }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .hlogo { width: 44px; height: 44px; flex-shrink: 0; }
 .htxt h1 { font-size: 17px; font-weight: 700; color: var(--yellow); letter-spacing: -.3px; }
 .htxt p  { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -40,7 +43,8 @@ header { background: var(--bg1); border-bottom: 1px solid var(--border); padding
 .stat.cb .n { color: var(--blue); }
 
 /* ── CONTROLS ── */
-.controls { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
+.controls { background: var(--bg1); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; padding: 10px 0; }
+.controls-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 input[type=search] { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 12px; font-family: var(--sans); padding: 7px 12px; width: 220px; outline: none; }
 input[type=search]:focus { border-color: var(--yellow); }
 select { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 12px; font-family: var(--sans); padding: 7px 10px; outline: none; cursor: pointer; }
@@ -49,12 +53,14 @@ select { background: var(--bg2); border: 1px solid var(--border); border-radius:
 .fbtn.active { background: var(--yellow); border-color: var(--yellow); color: #000; font-weight: 600; }
 
 /* ── TABS ── */
-.tabs { display: flex; background: var(--bg1); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
+.tabs { background: var(--bg1); border-bottom: 1px solid var(--border); overflow-x: auto; }
+.tabs-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; }
 .tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text3); cursor: pointer; font-size: 12px; font-family: var(--sans); padding: 11px 16px; transition: all .15s; white-space: nowrap; }
 .tab:hover { color: var(--text2); }
 .tab.active { border-bottom-color: var(--yellow); color: var(--yellow); font-weight: 600; }
 
-main { padding: 20px 24px; }
+main { padding: 20px 0; }
+.main-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .count-info { color: var(--text3); font-size: 11px; margin-bottom: 14px; }
 
 /* ── TABLE ── */
@@ -141,7 +147,29 @@ td.statuscel { white-space: nowrap; }
   flex-shrink: 0;
   vertical-align: middle;
   line-height: 1;
+  position: relative;
+  cursor: default;
 }
+.badge-primary::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--yellow-border);
+  border-radius: 5px;
+  color: var(--yellow);
+  font-size: 10px;
+  font-family: var(--sans);
+  white-space: nowrap;
+  padding: 4px 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 100;
+}
+.badge-primary:hover::after { opacity: 1; }
 
 /* ── GALLERY ── */
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 10px; }
@@ -206,6 +234,7 @@ td.statuscel { white-space: nowrap; }
 <body>
 
 <header>
+<div class="header-inner">
   <svg class="hlogo" viewBox="0 0 290 290" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#lc)">
       <path d="M63.2951 1H226.705C261.11 1 289 28.8905 289 63.2951V226.705C289 261.11 261.11 289 226.705 289H63.2951C28.8905 289 1 261.11 1 226.705V63.2951C1 28.8905 28.8905 1 63.2951 1Z" fill="#FFEF46" stroke="#EEDA0F" stroke-width="2"/>
@@ -223,18 +252,23 @@ td.statuscel { white-space: nowrap; }
     <span class="plat-tag">WEB</span>
   </div>
   <div class="stats" id="statsBar"></div>
+</div>
 </header>
 
 <div class="controls" id="controls">
+<div class="controls-inner">
   <input type="search" id="search" placeholder="Search action or icon…" oninput="render()">
   <select id="secFilter" onchange="render()"><option value="">All sections</option></select>
   <div style="display:flex;gap:6px;flex-wrap:wrap" id="filterBtns"></div>
 </div>
+</div>
 
-<div class="tabs" id="tabBar"></div>
+<div class="tabs"><div class="tabs-inner" id="tabBar"></div></div>
 <main>
+<div class="main-inner">
   <div class="count-info" id="countInfo"></div>
   <div id="view"></div>
+</div>
 </main>
 
 <script>
@@ -421,7 +455,7 @@ function badge(r) {
   if (r.status==='conflict') return '<span class="badge conflict">⚡ Conflict</span>';
   if (r.status==='ok')       return '<span class="badge ok">✅ OK</span>';
   if (r.dup) {
-    const star = r.isPrimary ? '<span class="badge-primary" title="Primary usage — keep this icon here">⭐</span>' : '';
+    const star = r.isPrimary ? '<span class="badge-primary" data-tip="Primary usage — keep this icon">⭐</span>' : '';
     return `<span class="badge dup">⚠️ Duplicate</span>${star}`;
   }
   return '<span class="badge none">—</span>';
