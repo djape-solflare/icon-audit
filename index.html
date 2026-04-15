@@ -244,6 +244,18 @@ td.statuscel { white-space: nowrap; }
 .dup-card { background: var(--bg1); border: 1px solid var(--orange-border); border-radius: 10px; overflow: hidden; }
 
 .empty { color: var(--text3); padding: 60px; text-align: center; }
+/* ── RESOLUTION TAB ── */
+.res-search-bar { background: var(--bg1); border-bottom: 1px solid var(--border); padding: 10px 0; }
+.res-stats { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.res-stat { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; text-align: center; }
+.res-stat .n { font-size: 22px; font-weight: 700; line-height: 1.2; }
+.res-stat .l { font-size: 10px; color: var(--text3); margin-top: 2px; }
+tbody tr.res-changed { background: rgba(76,175,80,0.06); }
+tbody tr.res-changed:hover { background: rgba(76,175,80,0.11); }
+.itag.res-new { background: rgba(76,175,80,0.15); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
+.res-was { font-family: var(--mono); font-size: 10px; color: var(--text3); background: var(--bg3); padding: 1px 5px; border-radius: 3px; text-decoration: line-through; opacity: 0.6; white-space: nowrap; }
+
+
 </style>
 </head>
 <body>
@@ -279,6 +291,12 @@ td.statuscel { white-space: nowrap; }
 </div>
 
 <div class="tabs"><div class="tabs-inner" id="tabBar"></div></div>
+<div class="res-search-bar" id="resSearchBar" style="display:none">
+<div class="controls-inner">
+  <input type="search" id="resSearch" placeholder="Search action or icon…" oninput="render()">
+  <button class="fbtn" id="resFilterChanged" onclick="toggleResFilter()" >⚡ Show changed only</button>
+</div>
+</div>
 <main>
 <div class="main-inner">
   <div class="count-info" id="countInfo"></div>
@@ -316,7 +334,7 @@ const DATA = [
   {l:'Tokens',                    mob:null,                ext:null,                web:'database',          s:['Nav']},
   {l:'Predictions',               mob:null,                ext:null,                web:'query_stats',       s:['Nav']},
   {l:'Stocks',                    mob:null,                ext:null,                web:'finance',           s:['Nav']},
-  {l:'Earn',                      mob:null,                ext:'paid',              web:'paid',              s:['Nav','STP']},
+  {l:'Earn',                      mob:null,                ext:'currency_exchange',  web:'currency_exchange', s:['Nav','STP']},
   {l:'Collections',               mob:null,                ext:null,                web:'grid_view',         s:['Nav']},
   {l:'Swap page (toggle)',        mob:'swap_vert',         ext:'swap_vert',         web:'swap_vert',         s:['Swap']},
   {l:'Back',                      mob:'arrow_back',        ext:'arrow_back',        web:null,                s:['STP']},
@@ -329,21 +347,21 @@ const DATA = [
   {l:'Candlestick chart view',    mob:'candlestick_chart', ext:null,                web:null,                s:['STP']},
   {l:'Limit order',               mob:'trending_up',       ext:null,                web:null,                s:['STP']},
   {l:'Homepage',                  mob:'language',          ext:'language',          web:null,                s:['STP']},
-  {l:'Earn Instructions',         mob:null,                ext:'paid',              web:null,                s:['STP']},
+  {l:'Earn Instructions',         mob:null,                ext:'info',              web:null,                s:['STP']},
   {l:'General',                   mob:'tune',              ext:'tune',              web:null,                s:['Settings']},
   {l:'Language (setting)',        mob:'globe',             ext:'globe',             web:null,                s:['Settings']},
-  {l:'Currency',                  mob:'attach_money',      ext:'attach_money',      web:null,                s:['Settings']},
+  {l:'Currency',                  mob:'payments',          ext:'payments',          web:null,                s:['Settings']},
   {l:'Network',                   mob:'hub',               ext:'hub',               web:null,                s:['Settings']},
   {l:'Address book',              mob:'contact_page',      ext:'contact_page',      web:null,                s:['Settings']},
   {l:'Notifications',             mob:'notifications',     ext:'notifications',     web:null,                s:['Settings']},
   {l:'Security & privacy',        mob:'shield',            ext:'shield',            web:null,                s:['Settings']},
   {l:'Privacy policy',            mob:'shield',            ext:'shield',            web:null,                s:['Settings']},
-  {l:'Manage apps',               mob:'link_alt',          ext:'link_alt',          web:null,                s:['Settings']},
+  {l:'Manage apps',               mob:'app_registration',  ext:'app_registration',  web:null,                s:['Settings']},
   {l:'Spending approvals',        mob:'link',              ext:'link',              web:null,                s:['Settings']},
   {l:'Biometrics',                        mob:'fingerprint',   ext:null,      web:null,   s:['Settings']},
-  {l:'Request authentication / Auto lock',mob:'key',           ext:'timer',   web:null,   s:['Settings']},
-  {l:'Change passcode / Change password', mob:'lock',          ext:'key',     web:null,   s:['Settings']},
-  {l:'Lock now',                          mob:null,            ext:'lock',    web:null,   s:['Settings']},
+  {l:'Request authentication / Auto lock',mob:'timer',         ext:'timer',   web:null,   s:['Settings']},
+  {l:'Change passcode / Change password', mob:'key',           ext:'key',     web:null,   s:['Settings']},
+  {l:'Lock now',                          mob:'lock',          ext:'lock',    web:null,   s:['Settings']},
   {l:'Terms of service',          mob:'docs',              ext:'docs',              web:null,                s:['Settings']},
   {l:'Log out',                   mob:'logout',            ext:'logout',            web:null,                s:['Settings']},
   {l:'Support',                   mob:'live_help',         ext:'live_help',         web:null,                s:['Settings']},
@@ -357,17 +375,16 @@ const DATA = [
   {l:'Mark as unverified',        mob:'delete',            ext:null,                web:null,                s:['Collectibles']},
   {l:'Intermediary trigger',      mob:'help',              ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Search',                    mob:'search',            ext:null,                web:null,                s:['Prediction Markets']},
-  {l:'Trending',                  mob:'trending_up',       ext:null,                web:null,                s:['Prediction Markets']},
+  {l:'Trending',                  mob:'whatshot',          ext:null,                web:null,                s:['Prediction Markets']},
   {l:'New',                       mob:'auto_awesome',      ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Volume',                    mob:'bar_chart',         ext:null,                web:null,                s:['Prediction Markets']},
-  {l:'Liquidity',                 mob:'swap_horiz',        ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Starting soon',             mob:'calendar_today',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Closing soon',              mob:'calendar_month',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Gainers',                   mob:'trending_up',       ext:'trending_up',       web:'trending_up',       s:['Market']},
   {l:'Losers',                    mob:'trending_down',     ext:'trending_down',     web:'trending_down',     s:['Market']},
   {l:'Market cap',                mob:'paid',              ext:'paid',              web:'paid',              s:['Market']},
   {l:'Volume (market)',           mob:'sync',              ext:'sync',              web:'sync',              s:['Market']},
-  {l:'Liquidity (market)',        mob:'swap_horiz',        ext:'swap_horiz',        web:'swap_horiz',        s:['Market']},
+  {l:'Liquidity',                 mob:'swap_horiz',        ext:'swap_horiz',        web:'swap_horiz',        s:['Market','Prediction Markets']},
   {l:'Holders',                   mob:'group',             ext:'group',             web:'group',             s:['Market']},
   {l:'Last added',                mob:'history',           ext:'history',           web:'history',           s:['Market']},
   {l:'Delta change up',           mob:'north_east',        ext:'north_east',        web:'north_east',        s:['Market','STP','Portfolio']},
@@ -379,17 +396,16 @@ const SUGS = {
   'Losers':                      { icon:'trending_down', keep:true, keepNote:'trending_down is distinct — unique to Losers' },
   'Market cap':                  { icon:'paid', keep:true, keepNote:'paid stays for Market cap' },
   'Volume (market)':             { icon:'sync', keep:true, keepNote:'sync stays for Volume (market)' },
-  'Liquidity (market)':          { icon:'water_drop', note:'swap_horiz also used for Swap/Trade nav — consider water_drop' },
   'Holders':                     { icon:'group', keep:true, keepNote:'group stays for Holders — unique usage' },
   'Last added':                  { icon:'schedule', note:'history also used for Activity nav — consider schedule or more_time' },
   'Delta change up':             { icon:'north_east', keep:true, keepNote:'north_east stays for delta up' },
   'Delta change down':           { icon:'south_east', keep:true, keepNote:'south_east stays for delta down' },
   'Stocks placeholder':          { icon:'candlestick_chart', note:'More specific to financial data visualization' },
   'Volume':                      { icon:'equalizer',         note:'Suggests quantity/magnitude, not market chart' },
-  'Liquidity':                   { icon:'water_drop',        note:'Liquid assets metaphor, distinct from swap' },
+  'Liquidity':                   { icon:'water_drop', note:'Liquid assets metaphor, distinct from swap' },
   'Homepage':                    { icon:'captive_portal',    note:'Avoid "home" — used in browser nav. captive_portal suggests a web entry point' },
   'Save':                        { icon:'download',          note:'Semantically clearer for saving/downloading an NFT' },
-  'Currency':                    { icon:'currency_exchange', note:'More specific to currency settings vs. card payments' },
+  'Currency':                    { icon:'payments', note:'payments — display currency preference, distinct from Earn currency_exchange' },
   'Privacy policy':              { icon:'policy',            note:'Document-like, distinct from security settings' },
   'Earn Instructions':           { icon:'info',              note:'Instructions are informational, not a payment action' },
   'Grid view':                   { icon:'grid_on',           note:'Collections nav uses grid_view — grid_on is distinct for the toggle' },
@@ -398,9 +414,14 @@ const SUGS = {
   'Remove from watchlist':       { icon:'star', keep:true, keepNote:'star outlined (FILL=0) — intentional fill variant of Add to watchlist' },
   'Limit order':                 { icon:'price_change',      note:'Suggests price threshold/target more clearly' },
   'Request password':            { icon:'password',          note:'More specific than key for password entry' },
-  'Change passcode / Lock':      { icon:'lock', keep:true,   keepNote:'lock stays as primary auth action' },
+  'Request authentication / Auto lock': { icon:'timer', keep:true, keepNote:'timer — communicates time-based auto lock' },
+  'Change passcode / Change password': { icon:'key', keep:true, keepNote:'key — credential change across MOB and EXT' },
+  'Lock now':                    { icon:'lock', keep:true, keepNote:'lock — immediate lock action' },
   'Explore':                     { icon:'language', keep:true, keepNote:'language stays for Explore nav' },
   'Market':                      { icon:'bar_chart', keep:true, keepNote:'bar_chart stays for Market nav' },
+  'Earn':                        { icon:'currency_exchange', keep:true, keepNote:'currency_exchange — yield/exchange connotation for earning' },
+  'Earn Instructions':           { icon:'info', keep:true, keepNote:'info — instructional content, not a payment action' },
+  'Trending':                    { icon:'whatshot', keep:true, keepNote:'whatshot — trending/popular, distinct from Gainers trending_up' },
 };
 
 // ── BUILD ICON MAP ────────────────────────────────────────────────────────────
@@ -525,7 +546,7 @@ fDefs.forEach((fd,i)=>{
   b.onclick=()=>setFilter(fd.f);fBtns.appendChild(b);
 });
 
-const tabDefs=[{id:'table',l:'📋 Table'},{id:'gallery',l:'🖼 Gallery'},{id:'iconindex',l:'🔢 Icon Index'},{id:'duplicates',l:'⚠️ Same icon, diff action'}];
+const tabDefs=[{id:'table',l:'📋 Table'},{id:'gallery',l:'🖼 Gallery'},{id:'iconindex',l:'🔢 Icon Index'},{id:'duplicates',l:'⚠️ Same icon, diff action'},{id:'resolution',l:'✅ Resolution'}];
 const tBar=document.getElementById('tabBar');
 tabDefs.forEach(td=>{
   const b=document.createElement('button');
@@ -544,7 +565,8 @@ function setFilter(f) {
 function setTab(t) {
   tab=t;
   tabDefs.forEach((td,i)=>tBar.children[i].classList.toggle('active',td.id===t));
-  document.getElementById('controls').style.display=t==='iconindex'?'none':'flex';
+  document.getElementById('controls').style.display=(t==='iconindex'||t==='resolution')?'none':'flex';
+  document.getElementById('resSearchBar').style.display=t==='resolution'?'block':'none';
   document.getElementById('stat-icons').classList.toggle('active',t==='iconindex');
   render();
 }
@@ -661,6 +683,80 @@ function renderIconIndex() {
   }).join('')}</div>`;
 }
 
+
+// ── RESOLUTION ────────────────────────────────────────────────────────────────
+// Compute a single "resolved" icon per action per platform, applying SUGS fixes
+function resolvedIcon(label, platform, currentIcon) {
+  if (!currentIcon) return null;
+  const sug = SUGS[label];
+  // If there's a suggestion with a replacement icon (not keep), apply it
+  if (sug && !sug.keep && sug.icon) return sug.icon;
+  return currentIcon;
+}
+
+function renderResolution() {
+  const q = (document.getElementById('resSearch')?.value||'').toLowerCase();
+  // Build resolved rows — one icon per platform, no conflicts, no dups
+  const rows = DATA.map(r => {
+    const mob = resolvedIcon(r.l, 'mob', r.mob);
+    const ext = resolvedIcon(r.l, 'ext', r.ext);
+    const web = resolvedIcon(r.l, 'web', r.web);
+    // Determine if this row had an issue that was resolved
+    const orig = enriched.find(e => e.l === r.l);
+    const wasIssue = orig && (orig.status === 'conflict' || orig.dup);
+    const changed = (mob !== r.mob || ext !== r.ext || web !== r.web);
+    return {...r, mob, ext, web, wasIssue, changed};
+  }).filter(r => !q || r.l.toLowerCase().includes(q) || [r.mob,r.ext,r.web].some(ic=>ic&&ic.includes(q)))
+    .filter(r => !resFilterChanged || r.changed);
+
+  const resolvedCount = rows.filter(r => r.changed).length;
+  const conflictRows = enriched.filter(r => r.status === 'conflict').length;
+  const dupRows = enriched.filter(r => r.dup).length;
+
+  const statsHtml = `<div class="res-stats">
+    <div class="res-stat"><div class="n" style="color:var(--green)">${rows.length}</div><div class="l">Total actions</div></div>
+    <div class="res-stat"><div class="n" style="color:var(--yellow)">${resolvedCount}</div><div class="l">Icons changed</div></div>
+    <div class="res-stat"><div class="n" style="color:var(--red)">${conflictRows}</div><div class="l">Conflicts resolved</div></div>
+    <div class="res-stat"><div class="n" style="color:var(--orange)">${dupRows}</div><div class="l">Duplicates resolved</div></div>
+  </div>`;
+
+  const tableHtml = `<div class="table-wrap"><table>
+    <thead><tr><th>Action / Label</th><th>Sections</th><th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th><th>Change</th></tr></thead>
+    <tbody>${rows.map(r => {
+      const orig = enriched.find(e => e.l === r.l);
+      const rowCls = r.changed ? 'res-changed' : '';
+      function rpill(newIc, origIc) {
+        if (!newIc) return '<span class="dash">—</span>';
+        const didChange = newIc !== origIc;
+        return `<div class="ipill">${ig(newIc)}
+          <span class="itag${didChange?' res-new':''}" title="${newIc}">${newIc}</span>
+          ${didChange && origIc ? `<span class="res-was" title="was: ${origIc}">${origIc}</span>` : ''}
+        </div>`;
+      }
+      const changeCell = r.changed
+        ? `<span class="badge ok">✅ Fixed</span>`
+        : (orig && orig.status === 'conflict' ? `<span class="badge conflict">⚡ Needs fix</span>` : `<span class="badge none">—</span>`);
+      return `<tr class="${rowCls}">
+        <td class="lbl">${r.l}</td>
+        <td class="seccell">${secTags(r.s)}</td>
+        <td>${rpill(r.mob, orig?.mob)}</td>
+        <td>${rpill(r.ext, orig?.ext)}</td>
+        <td>${rpill(r.web, orig?.web)}</td>
+        <td class="statuscel">${changeCell}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+
+  return statsHtml + tableHtml;
+}
+
+let resFilterChanged = false;
+function toggleResFilter() {
+  resFilterChanged = !resFilterChanged;
+  document.getElementById('resFilterChanged').classList.toggle('active', resFilterChanged);
+  render();
+}
+
 function searchIcon(name) {
   const el = document.getElementById('search');
   el.value = name;
@@ -684,6 +780,7 @@ function render() {
   else if (tab==='gallery')    v.innerHTML=renderGallery(rows);
   else if (tab==='duplicates') v.innerHTML=renderDuplicates();
   else if (tab==='iconindex')  v.innerHTML=renderIconIndex();
+  else if (tab==='resolution')  v.innerHTML=renderResolution();
 }
 render();
 </script>
