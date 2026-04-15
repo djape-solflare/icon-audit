@@ -101,9 +101,9 @@ td.statuscel { white-space: nowrap; }
   -webkit-font-feature-settings: 'liga';
   font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
-  /* default color — overridden per context below */
   color: var(--text);
 }
+
 
 /* icon pill: glyph + name */
 .ipill { display: inline-flex; align-items: center; gap: 7px; }
@@ -339,7 +339,7 @@ const DATA = [
   {l:'Swap page (toggle)',        mob:'swap_vert',         ext:'swap_vert',         web:'swap_vert',         s:['Swap']},
   {l:'Back',                      mob:'arrow_back',        ext:'arrow_back',        web:null,                s:['STP']},
   {l:'Add to watchlist',          mob:'star',              ext:null,                web:null,                s:['STP'], nodup:true},
-  {l:'Remove from watchlist',     mob:'star',              ext:null,                web:null,                s:['STP'], nodup:true},
+  {l:'Remove from watchlist',     mob:'star',              ext:null,                web:null,                s:['STP'], nodup:true, fill:false},
   {l:'Share token',               mob:null,                ext:'upload',            web:null,                s:['STP']},
   {l:'View on explorer',          mob:'open_in_new',       ext:'open_in_new',       web:'open_in_new',       s:['STP','Collectibles']},
   {l:'Pin to top',                mob:'keep',              ext:'keep',              web:null,                s:['STP']},
@@ -377,7 +377,7 @@ const DATA = [
   {l:'Search',                    mob:'search',            ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Trending',                  mob:'whatshot',          ext:null,                web:null,                s:['Prediction Markets']},
   {l:'New',                       mob:'auto_awesome',      ext:null,                web:null,                s:['Prediction Markets']},
-  {l:'Volume',                    mob:'bar_chart',         ext:null,                web:null,                s:['Prediction Markets']},
+  {l:'Volume',                    mob:'area_chart',        ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Starting soon',             mob:'calendar_today',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Closing soon',              mob:'calendar_month',    ext:null,                web:null,                s:['Prediction Markets']},
   {l:'Gainers',                   mob:'trending_up',       ext:'trending_up',       web:'trending_up',       s:['Market']},
@@ -401,7 +401,7 @@ const SUGS = {
   'Delta change up':             { icon:'north_east', keep:true, keepNote:'north_east stays for delta up' },
   'Delta change down':           { icon:'south_east', keep:true, keepNote:'south_east stays for delta down' },
   'Stocks placeholder':          { icon:'candlestick_chart', note:'More specific to financial data visualization' },
-  'Volume':                      { icon:'equalizer',         note:'Suggests quantity/magnitude, not market chart' },
+  'Volume':                      { icon:'area_chart',        note:'area_chart — volume as flow/area, visually distinct from bar_chart' },
   'Liquidity':                   { icon:'water_drop', note:'Liquid assets metaphor, distinct from swap' },
   'Homepage':                    { icon:'captive_portal',    note:'Avoid "home" — used in browser nav. captive_portal suggests a web entry point' },
   'Save':                        { icon:'download',          note:'Semantically clearer for saving/downloading an NFT' },
@@ -482,8 +482,6 @@ function ig(name, extraCls='') {
 // In the table, icons always use var(--text) — no ci/di class passed
 function ipill(name, st, dp) {
   if (!name) return '<span class="dash">—</span>';
-  // table icons: neutral color (var(--text) via base .ig)
-  // only the itag label chip gets the conflict/dup tint
   const tc = st==='conflict'?'ci':(dp?'di':'');
   return `<div class="ipill">${ig(name)}<span class="itag ${tc}" title="${name}" onclick="searchIcon('${name}')">${name}</span></div>`;
 }
@@ -610,13 +608,14 @@ function filtered() {
 function renderTable(rows) {
   if (!rows.length) return '<div class="empty">No results.</div>';
   return `<div class="table-wrap"><table>
-    <thead><tr><th>Action / Label</th><th>Sections</th><th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th><th>Status</th></tr></thead>
+    <thead><tr><th>Action / Label</th><th>Sections</th><th class="plat">MOB</th><th class="plat">EXT</th><th class="plat">WEB</th><th>Fill</th><th>Status</th></tr></thead>
     <tbody>${rows.map(r=>`<tr class="${r.status==='conflict'?'conflict':(r.dup?'dup':'')}">
       <td class="lbl">${r.l}</td>
       <td class="seccell">${secTags(r.s)}</td>
       <td>${ipill(r.mob,r.status,r.dup)}</td>
       <td>${ipill(r.ext,r.status,r.dup)}</td>
       <td>${ipill(r.web,r.status,r.dup)}</td>
+      <td>${r.fill===false ? '<span class="badge" style="background:var(--bg3);color:var(--text3)">false</span>' : '<span class="badge ok" style="background:rgba(127,159,246,0.12);color:var(--blue)">true</span>'}</td>
       <td class="statuscel">${badge(r)}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
